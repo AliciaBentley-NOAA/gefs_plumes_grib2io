@@ -1,0 +1,100 @@
+#!/bin/sh -l
+echo 'into'
+#Script to create text files of surface obs at various stations
+module load gnu/4.8.5
+module load ips/18.0.1.163
+module load ips/18.0.5.274
+module load metplus/2.1
+module load gempak/7.3.3
+
+mkdir -p /gpfs/dell1/stmp/Alicia.Bentley/obsgefsv12
+cd /gpfs/dell1/stmp/Alicia.Bentley/obsgefsv12
+rm -rf *txt
+
+#date +%Y%m%d12 > holddate.txt
+#/bin/date --date="yesterday" +%Y%m%d00 > yholddate.txt
+/bin/date --date="2 days ago" +%Y%m%d00 > yholddate.txt
+#/bin/date +%Y%m%d00 > yholddate.txt
+year=`cut -c 1-4 yholddate.txt`
+month=`cut -c 5-6 yholddate.txt`
+day=`cut -c 7-8 yholddate.txt`
+hour=`cut -c 9-10 yholddate.txt`
+cyc=`cut -c 9-10 yholddate.txt`
+
+ymdh=${year}${month}${day}${hour}
+
+#ymdh=`cut -c 1-10 holddate.txt`
+ymd=`cut -c 1-8 yholddate.txt`
+echo $ymdh
+echo $ymd
+
+k=0
+stations="724030"
+stations="DEN"
+stations="GJT"
+stations="DEN GJT PUB ORD \
+          DEC IND FWA DVN \
+          DSM DDC GLD TOP ICT \
+          JKL SDF PAH DET GLR GRR \
+          SAW DLH MSP MCI SGF STL \
+          HSI LBF OMA BIS GFK ABR \
+          RAP FSD GRB LSE MKE CYS \
+          RIW CAR LEW BOS PHL ALB \
+          BGM BUF LGA NKT RDU ILM \
+          CLE ILN PIT UNV CHS CAE \
+          GSP BTV IAD BCB RIC CRW \
+          BHM HSV MOB LIT JAX EYW \
+          MLB MIA TLH TPA ATL LCH \
+          NEW SHV JAN ABQ OUN TUL \
+          MEM TYS BNA AMA SAT BRO \
+          CRP ELP DAL HOU LBB MAF \
+          SJT FLG PHX TUS ACV LAX \
+          SAC SAN SFO SCK BOI PIH \
+          BIL GGW GTF MSO EKO LAS \
+          RNO MFR PDT PDX SLC SEA GEG"
+#stations="727535"
+#stations="727535"
+stations="LIT PHX LAX SFO DEN JAX MIA ATL BOI ORD DDC MSY BOS CAR ANJ MSP MCI STL GTF ILM BIS ABQ TPH BUF MFR DFW BRO LBB SLC IAD SEA DTW INL HSE FAR VTN LGA EUG CHS GEG SHR TUS FLG FAT MRY SAC SAN GJT EYW MCO DSM IND ACK DLH GGW WEY RDU GFK OMA LAS RNO OKC PDX PDT PIT RAP FSD MEM BNA CRP DRT ELP IAH UIL RIW EET MOB FSM PGA YUM EDW PSP RDD VBG PUB TLH TPA MCN DVN SUX PIH FWA GLD ICT LOU PAH LCH SHV BGR PWM GLR GRR AXN JAN HVR MSO NKT GSO LBF EKO ELY WMC ALB SYR CLE ILN TUL DLS PHL UNV CAE GSP ABR PIR AMA AUS CDS LRD ROA ORF BTV YKM GRB MKE HTS CYS COD HSV GCN INW NID AKO ASE CAG DRO GXY LAA LIC HFD GNV MLB VRB AHN AGS SAV CID DBQ ALO COE DEC PIA RFD EVV GYY LAF SBN GCK HYS LBL MHK BWG LEX BTR POE SBY AUG APN FNT LAN MKG MQT BRD PKD COU STJ GWO TUP BZN CTB HLN MLS AVL CLT FAY ACY CVS HMN ROW POU UCA CMH DAY ADM END AST ERI TRI CHA TYS ABI CLL GGG TYR SPS CDC ENV RIC MPV HQM EAU MSN EKN MRB PANC PANT PABR PABE PACD PASY PAFA PAKN PADQ PAOT PAMC PAOM PASN PAYA PHTO PHLI PHMO JKL SGF MAF SJT PABT PALU PAEH PACZ PACV PASC PABI PADL PAGA PAGK PAHN PAHO PAIL PAIM PAOR PAPG PASI PATK PATA PATC PAUN PADU OZR ELD JBR TXK DUG SAD SOW ACV BFL BYS BIH BLH NJK MOD EED PRB STS ALS VPS RSW PAM ABY AMG CSG VLD PHKO BRL FOD OTM SPW BYI SUN LWS MYL SMN CNU MLU EPM RWF RST RRT IRK POF SZL NMM PIB BIL DLN GDV GPI LWT DIK JMS MIB ISN CDR GRI MCK ONL BFF CON GUP CNM DMN HOB TCS LOL GTB MSS FDY GAG HBR MLC BKE BNO LKV OTH RDM REO AVP BFD JST MDT FLO HON MBG ATY CSV DYR DHT FST JCT LFK MRF PSX ACT LGU VEL CHO BLI EPH HYR LSE CWA BKW PKB BPI CPR GCC JAC RWL RKS WRL AAA TNB ORE ISP ASD 2C2 BWI BDR PVD HUL BLV FYV TOP LNK CVG BGM DAB MWL HIB STC COS DPG SLE SMP SAF LVS PRC ONT PAJN PBI MGW SAT MGM PHNL TJSJ PGUA NSTU BLU NHK CBE 2WX PAKP PAFM PFYU PAWD"
+
+hours="24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 09 08 07 06 05 04 03 02 01"
+hours="23"
+porp=$( cat /etc/dev )
+if [[ $porp -eq "venus" ]]
+then
+for s in $stations; do
+for h in $hours; do
+/gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/advtime $ymdh 0 -1 1 0 > currentday.txt
+ymdcurrent=`cut -c 1-8 currentday.txt`
+fmdl1=/gpfs/dell1/nco/ops/dcom/prod/ldmdata/gempak/hrly/${ymd}.hrly
+#fmdl1=/stmpp1/Corey.Guastini/metdata/${ymdcurrent}_sao.gem
+((k=k+1))
+
+    sflist << EOF
+SFFILE = $fmdl1
+AREA   = @${s}
+DATTIM = `/gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/advtime $ymdh 0 -1 0`-`/gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/advtime $ymdh $h -1 0`
+SFPARM = tmpc;dwpc;sknt;drct;tclo;pmsl;P01I
+OUTPUT = f/pancobs${h}.txt
+IDNTYP = STID
+l
+r
+
+
+ex
+EOF
+
+gpend
+
+cat pancobs${h}.txt >> pancobs.txt
+
+done
+sed '/^\s*$/d' pancobs.txt | sed '/STN/d' | sed '/PARM/d' | sed '/P01I/d'  > rtmp.txt && mv rtmp.txt pancobs.txt
+#mv pancobs.txt /global/save/Tracey.Dorian/meteograms/${s}_${ymdcurrent}obs.txt
+mv pancobs.txt ${s}_${ymd}obs.txt
+#mv pancobs.txt /global/save/Tracey.Dorian/meteograms/744550_${ymdcurrent}obs.txt
+rm -rf *pancobs*txt
+done
+scp *${ymd}*.txt abentley@emcrzdm:/home/www/emc/htdocs/users/meg/gefs_plumes/
+#scp *${ymd}*.txt tdorian@emcrzdm:/home/www/emc/htdocs/gc_wmb/tdorian/fv3plumes/
+fi
+exit

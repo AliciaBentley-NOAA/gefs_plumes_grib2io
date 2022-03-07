@@ -1,0 +1,18 @@
+# GEFSv12 PLUMES CRON JOBS
+#30 07
+30 07 * * * /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/drive_gefs 00 1>/gpfs/dell1/ptmp/Alicia.Bentley/log/gefsv12.out00 2>&1
+
+#15 12
+15 12 * * * /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/drive_gefs 06 1>/gpfs/dell1/ptmp/Alicia.Bentley/log/gefsv12.out06 2>&1
+
+#57 17
+57 17 * * * /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/drive_gefs 12 1>/gpfs/dell1/ptmp/Alicia.Bentley/log/gefsv12.out12 2>&1
+
+#57 23
+57 23 * * * /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/drive_gefs 18 1>/gpfs/dell1/ptmp/Alicia.Bentley/log/gefsv12.out18 2>&1
+
+#41 05
+41 05 * * * /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/gefsobs 1>/gpfs/dell1/ptmp/Alicia.Bentley/log/gefsv12obs.out 2>&1
+
+#41 12
+41 12 * * * /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/ygefsobs 1>/gpfs/dell1/ptmp/Alicia.Bentley/log/ygefsv12obs.out 2>&1

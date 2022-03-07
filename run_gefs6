@@ -1,0 +1,54 @@
+#!/bin/ksh --login
+#
+#BSUB -oo /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/gefs6.out
+#BSUB -eo /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/gefs6.out
+#BSUB -J gefs_6
+#BSUB -n 4
+#BSUB -R span[ptile=1]
+#BSUB -W 01:00
+#BSUB -P GEN-T2O
+#BSUB -R "affinity[core(4):distribute=balance]"
+#BSUB -q "dev"
+#BSUB -x
+#
+
+set +x
+source /u/Alicia.Bentley/.bashrc
+set -x
+
+cd /gpfs/dell1/stmp/Alicia.Bentley/gefsv12
+export HOLDIN=/gpfs/dell1/stmp/Alicia.Bentley
+export GBexec=/gpfs/dell1/nco/ops/nwprod/util/exec
+
+echo intoscript
+rm -rf /gpfs/dell1/stmp/Alicia.Bentley/gefsv12/*.csv
+#date +%Y%m%d${cyc} > holddate.txt
+year=`cut -c 1-4 holddate.txt`
+month=`cut -c 5-6 holddate.txt`
+day=`cut -c 7-8 holddate.txt`
+hour=`cut -c 9-10 holddate.txt`
+cyc=`cut -c 9-10 holddate.txt`
+ymdh=${year}${month}${day}${hour}
+
+
+set +x
+set -x
+
+'rm' poescript6
+
+echo "/gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/launchgefs6 ${cyc}" >> poescript6
+
+
+chmod 775 poescript6
+export MP_PGMMODEL=mpmd
+export MP_CMDFILE=poescript6
+#
+# Execute the script.
+
+echo beforelsf
+mpirun -l cfp poescript6
+echo pastlsf
+
+#bsub < /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/run_ftp_gefs1
+#bsub < /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/run_ftp_gefs
+exit

@@ -1,0 +1,31 @@
+#!/bin/ksh --login
+echo 'into'
+source /u/Alicia.Bentley/.bashrc
+#module load gempak/7.3.3
+cyc=$1
+
+mkdir -p /gpfs/dell1/stmp/Alicia.Bentley
+mkdir -p /gpfs/dell1/stmp/Alicia.Bentley/gefsv12
+cd /gpfs/dell1/stmp/Alicia.Bentley/gefsv12
+#cp /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/matplotlibrc .
+#cp /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/ncepy.py .
+
+year=`cut -c 1-4 holddate.txt`
+month=`cut -c 5-6 holddate.txt`
+day=`cut -c 7-8 holddate.txt`
+hour=`cut -c 9-10 holddate.txt`
+dow=`cut -c 11-13 holddate.txt`
+ymdh=${year}${month}${day}${hour}
+ymdhdow=${year}${month}${day}${hour}${dow}
+
+python /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/makegefscsv.py $ymdh &
+python /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/makegefspwcsv.py $ymdh &
+python /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/makegefs10mwindcsv.py $ymdh &
+wait
+
+#cp /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/edit_gefs.ksh .
+#./edit_gefs.ksh
+
+exit
+
+

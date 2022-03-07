@@ -1,0 +1,63 @@
+#!/bin/ksh -l
+
+set +x
+module purge
+#source /u/Alicia.Bentley/.bashrc
+module load ips/18.0.1.163
+module load impi/18.0.1
+module load NetCDF/4.5.0
+module load bacio/2.0.2
+module load sfcio/1.0.0
+module load lsf/10.1
+module load nemsio/2.2.3
+module load w3emc/2.3.0
+module load sp/2.0.2
+module load w3nco/2.0.6
+module load impi/18.0.1
+module load bufr/11.2.0
+module load sigio/2.0.1
+module load crtm/2.2.5
+module load CFP/2.0.1
+module load EnvVars/1.0.2
+module load pm5/1.0
+module load subversion/1.7.16
+module load HPSS/5.0.2.5
+module load mktgs/1.0
+module load rsync/3.1.2
+module load ip/3.0.1
+module load prod_envir/1.0.2
+module load grib_util/1.0.6
+module load prod_util/1.1.5
+
+module load python/3.6.3
+module use /gpfs/dell2/mdl/mdlstat/save/util/modulefiles
+module load python-extra/3.6.3
+#module use -a /u/Benjamin.Blake/modulefiles
+#module load python3/test
+#export GRIB_DEFINITION_PATH=/usrx/local/nceplibs/dev/lib/grib_api/share/grib_api/definitions
+
+export PYTHONPATH=${PYTHONPATH}:/gpfs/dell2/emc/modeling/noscrub/Jacob.Carley/python/lib/python3.6/site-packages
+set -x
+
+cyc=$1
+
+mkdir -p /gpfs/dell1/ptmp/Alicia.Bentley
+mkdir -p /gpfs/dell1/ptmp/Alicia.Bentley/log
+mkdir -p /gpfs/dell1/stmp/Alicia.Bentley
+mkdir -p /gpfs/dell1/stmp/Alicia.Bentley/grib2io_test
+cd /gpfs/dell1/stmp/Alicia.Bentley/grib2io_test
+cp /gpfs/dell2/emc/verification/save/Alicia.Bentley/grib2io_test/*gfsxsta*txt .
+
+sleep 3
+/bin/date +%Y%m%d${cyc}%a > holddate.txt
+sleep 3
+/bin/date --date="yesterday" +%Y%m%d${cyc}%a > yholddate.txt
+
+#sleep 3
+#/bin/date --date="yesterday" +%Y%m%d${cyc}%a > holddate.txt
+#sleep 3
+#/bin/date --date="2 days ago" +%Y%m%d${cyc}%a > yholddate.txt
+
+sleep 3
+bsub < /gpfs/dell2/emc/verification/save/Alicia.Bentley/grib2io_test/run_gefs
+exit

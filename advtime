@@ -1,0 +1,163 @@
+#!/bin/sh
+#########################################################################
+# advtime.sh								#
+#									#
+#  This script is used to advance forward or backward in date/time.	#
+#									#
+#  Log:									#
+#  K. Brill/HPC		 9/01	Created from advtime in C shell		#
+#  K. Brill/HPC		11/01	Trap 2-digit year invalid date		#
+#########################################################################
+
+if [ $# -eq 0 ]; then
+   cat << EOF
+
+   This script goes forward or backward in time beginning at the
+   starting time.
+
+   Command line inputs are:
+
+ 	YYYYMMDDHH	=	starting year month day hour
+ 	DH		=	time increment in hours (- => backward)
+ 	NDH		=	number of increments
+ 
+	If NDH is negative, the first time is not output; otherwise,
+ 	there will be NDH + 1 output times. 
+
+	Any fourth command line input triggers output times in GEMPAK
+        format, YYYYMMDD/HH; otherwise, the output format is the same
+        as the input format, YYYYMMDDHH.
+
+EOF
+    exit
+fi
+
+ymdh=$1
+cnt=`echo $ymdh | wc -c`
+if [ $cnt -lt 10 ]; then
+    echo $ymdh is not valid for YYYYMMDDHH
+    exit 1
+fi
+dh=`expr $2 + 0`
+ndh=`expr $3 + 0`
+
+if [ $ndh -lt 0 ]; then
+    ndh=`expr -1 \* $ndh`
+    first=2
+else
+    first=1
+fi
+
+monday="31 28 31 30 31 30 31 31 30 31 30 31"
+yy=`echo $ymdh | cut -c1-4`
+mm=`echo $ymdh | cut -c5-6`
+dd=`echo $ymdh | cut -c7-8`
+hh=`echo $ymdh | cut -c9-10`
+
+times=${yy}${mm}${dd}/${hh}
+ymdhs=${yy}${mm}${dd}${hh}
+
+ddd=$dd
+mmm=$mm
+
+dd=`expr $dd + 0`
+mm=`expr $mm + 0`
+yy=`expr $yy + 0`
+
+hr=`expr $hh + 0`
+icnt=0
+
+while [ $icnt -lt $ndh ]; do
+    icnt=`expr $icnt + 1`
+    hr=`expr $hr + $dh`
+
+    while [ $hr -lt 0 ]; do
+	hr=`expr $hr + 24`
+	dd=`expr $dd - 1`
+	if [ $dd -eq 0 ]; then
+	    mm=`expr $mm - 1`
+	    if [ $mm -eq 0 ]; then
+		yy=`expr $yy - 1`
+		mm=12
+	    fi
+	    mmm=$mm
+    	    if [ $mm -lt 10 ]; then
+		mmm=0$mm
+	    fi
+	    dd=`echo $monday | cut -d" " -f$mm`
+	    leap=0
+	    if [ `expr $yy % 400` -eq 0 ]; then
+		leap=1
+	    elif [ `expr $yy % 4` -eq 0 -a `expr $yy % 100` -ne 0 ]; then
+		leap=1
+	    fi
+	    if [ $leap -eq 1 -a $mm -eq 2 ]; then
+		 dd=`expr $dd + 1`
+	    fi
+	fi
+	ddd=$dd
+    	if [ $dd -lt 10 ]; then
+	    ddd=0$dd
+	fi
+    done
+    while [ $hr -ge 24 ]; do
+	hr=`expr $hr - 24`
+	dd=`expr $dd + 1`
+	dtst=`echo $monday | cut -d" " -f$mm`
+	mm=$mm
+	yy=$yy
+	leap=0
+	if [ `expr $yy % 400` -eq 0 ]; then
+	    leap=1
+	elif [ `expr $yy % 4` -eq 0 -a `expr $yy % 100` -ne 0 ]; then
+	    leap=1
+	fi
+	if [ $leap -eq 1 -a $mm -eq 2 ]; then
+	     dtst=`expr $dtst + 1`
+	fi
+	if [ $dd -gt $dtst ]; then
+	    mm=`expr $mm + 1`
+	    if [ $mm -eq 13 ]; then
+		yy=`expr $yy + 1`
+		mm=1
+	    fi
+	    mmm=$mm
+    	    if [ $mm -lt 10 ]; then
+		mmm=0$mm
+	    fi
+	    dd=1
+	fi
+	ddd=$dd
+    	if [ $dd -lt 10 ]; then
+	    ddd=0$dd
+	fi
+    done
+    hhh=$hr
+    if [ $hr -lt 10 ]; then
+	hhh=0$hr
+    fi
+    yyy=$yy
+    if [ $yy -lt 10 ]; then
+	 yyy=0$yy
+    fi
+    times="$times ${yyy}${mmm}${ddd}/${hhh}"
+    ymdhs="$ymdhs ${yyy}${mmm}${ddd}${hhh}"
+done
+
+if [ $# -eq 4 ]; then
+    i=0
+    for t in $times; do
+	i=`expr $i + 1`
+    	if [ $i -ge $first ]; then
+	    echo $t
+	fi
+    done
+else
+    i=0
+    for t in $ymdhs; do
+	i=`expr $i + 1`
+    	if [ $i -ge $first ]; then
+	    echo $t
+	fi
+    done
+fi

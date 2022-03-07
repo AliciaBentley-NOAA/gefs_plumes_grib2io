@@ -1,0 +1,88 @@
+#!/bin/ksh --login
+#
+#BSUB -oo /gpfs/dell2/emc/verification/save/Alicia.Bentley/grib2io_test/gefs1.out
+#BSUB -eo /gpfs/dell2/emc/verification/save/Alicia.Bentley/grib2io_test/gefs1.out
+#BSUB -J gefs_1
+#BSUB -n 4
+#BSUB -R span[ptile=1]
+#BSUB -W 01:00
+#BSUB -P GEN-T2O
+#BSUB -R "affinity[core(4):distribute=balance]"
+#BSUB -q "dev"
+#BSUB -x
+#
+
+set +x
+module purge
+#source /u/Alicia.Bentley/.bashrc
+module load ips/18.0.1.163
+module load impi/18.0.1
+module load NetCDF/4.5.0
+module load bacio/2.0.2
+module load sfcio/1.0.0
+module load lsf/10.1
+module load nemsio/2.2.3
+module load w3emc/2.3.0
+module load sp/2.0.2
+module load w3nco/2.0.6
+module load impi/18.0.1
+module load bufr/11.2.0
+module load sigio/2.0.1
+module load crtm/2.2.5
+module load CFP/2.0.1
+module load EnvVars/1.0.2
+module load pm5/1.0
+module load subversion/1.7.16
+module load HPSS/5.0.2.5
+module load mktgs/1.0
+module load rsync/3.1.2
+module load ip/3.0.1
+module load prod_envir/1.0.2
+module load grib_util/1.0.6
+module load prod_util/1.1.5
+
+module load python/3.6.3
+module use /gpfs/dell2/mdl/mdlstat/save/util/modulefiles
+module load python-extra/3.6.3
+#module use -a /u/Benjamin.Blake/modulefiles
+#module load python3/test
+#export GRIB_DEFINITION_PATH=/usrx/local/nceplibs/dev/lib/grib_api/share/grib_api/definitions
+
+export PYTHONPATH=${PYTHONPATH}:/gpfs/dell2/emc/modeling/noscrub/Jacob.Carley/python/lib/python3.6/site-packages
+set -x
+
+cd /gpfs/dell1/stmp/Alicia.Bentley/grib2io_test
+export HOLDIN=/gpfs/dell1/stmp/Alicia.Bentley
+export GBexec=/gpfs/dell1/nco/ops/nwprod/util/exec
+
+echo intoscript
+#rm -rf /gpfs/dell1/stmp/Alicia.Bentley/grib2io_test/*.csv
+year=`cut -c 1-4 holddate.txt`
+month=`cut -c 5-6 holddate.txt`
+day=`cut -c 7-8 holddate.txt`
+hour=`cut -c 9-10 holddate.txt`
+cyc=`cut -c 9-10 holddate.txt`
+ymdh=${year}${month}${day}${hour}
+
+
+set +x
+set -x
+
+'rm' poescript1
+
+echo "/gpfs/dell2/emc/verification/save/Alicia.Bentley/grib2io_test/launchgefs ${cyc} > out_launchgefs.txt" >> poescript1
+
+
+chmod 775 poescript1
+export MP_PGMMODEL=mpmd
+export MP_CMDFILE=poescript1
+#
+# Execute the script.
+
+echo beforelsf
+mpirun -l cfp poescript1 > out_poescript1.txt
+echo pastlsf
+
+bsub < /gpfs/dell2/emc/verification/save/Alicia.Bentley/grib2io_test/run_ftp_gefs1
+bsub < /gpfs/dell2/emc/verification/save/Alicia.Bentley/grib2io_test/run_ftp_gefs
+exit
