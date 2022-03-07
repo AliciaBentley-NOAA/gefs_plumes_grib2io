@@ -13,7 +13,9 @@ import matplotlib.pyplot as plt
 from scipy import interpolate
 import sys
 
+#input argument in YYYYMMDDHH
 ymdh = str(sys.argv[1])
+#station info arrays
 slist=[]
 slats=[]
 slons=[]
@@ -23,6 +25,7 @@ with open('gfsxstations.txt','r') as f:
     slist.append(x[0])
     slats.append(float(x[1]))
     slons.append(float(x[2]))
+#column headers
 members=['time','date','c00','p01','p02','p03','p04','p05','p06','p07','p08','p09','p10','p11','p12','p13','p14','p15','p16','p17','p18','p19','p20','p21','p22','p23','p24','p25','p26','p27','p28','p29','p30','GFS']
 fhours=[]
 preciptotal=[]
@@ -40,11 +43,15 @@ dtime=datetime.datetime(year,month,day,hour,0)
 date_list = [dtime + datetime.timedelta(hours=x) for x in range(closest,furthest,3)]
 firstdate=dtime - datetime.timedelta(hours=fhour)
 fhours1=list(range(closest,furthest,3))
+
+#array that gets written to csv. Everything will be put in it 
 nmbtotal=np.empty((len(slist),len(fhours1),len(members)+1),dtype='object')
 print(nmbtotal.shape)
+
 for i in range(len(members)):
   print(members[i])
   ptotal=0
+  #do different things for different columns and forecast hours
   for j in range(len(fhours1)):
     if i==0:
       nmbtotal[:,j,i]=fhours1[j]
@@ -52,6 +59,7 @@ for i in range(len(members)):
       nmbtotal[:,j,i]=date_list[j].strftime("%m-%d-%Y:%H")
     elif i>1 and members[i]!='GFS':
       grbs = grib2io.open('/gpfs/dell4/nco/ops/com/gefs/prod/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2bp5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2b.0p50.f'+str(fhours1[j]).zfill(3), mode='r') 
+      #grib message order changes from f00 to f03 to f06
       if j==0:
         #precip=grbind.select(name='Convective available potential energy',level=0)[0].values
         #precip=grbs[297][0].data()
@@ -72,10 +80,14 @@ for i in range(len(members)):
       lonlist=lons[0,:]
       lonlist=np.asarray(lonlist)
       latlist=np.asarray(latlist)
+
+      #create interpolation function
       f=interpolate.interp2d(lonlist,latlist,precip,kind='linear')
       for k in range(len(slats)):
         znew=np.round(f((360+slons[k]),slats[k]),3)
         nmbtotal[k,j,i]=znew
+
+    #get GFS data
     else:
       grbs = grib2io.open('/gpfs/dell1/nco/ops/com/gfs/prod/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
       if j==0:
@@ -95,13 +107,19 @@ for i in range(len(members)):
       lonlist=lons[0,:]
       lonlist=np.asarray(lonlist)
       latlist=np.asarray(latlist)
+
+      #create interpolation function
       f=interpolate.interp2d(lonlist,latlist,precip,kind='linear')
       for k in range(len(slats)):
         znew=np.round(f((360+slons[k]),slats[k]),3)
         nmbtotal[k,j,34]=znew
+
+#compute mean
 for k in range(len(slats)):
   for j in range(len(fhours1)):
     nmbtotal[k,j,33]=np.round(np.sum(nmbtotal[k,j,2:33])/31.0,3)
+
+#write csv files
 for k in range(len(slats)):
   f = open("GEFS"+slist[k]+ymdh+"cape.csv","wt")
   try:

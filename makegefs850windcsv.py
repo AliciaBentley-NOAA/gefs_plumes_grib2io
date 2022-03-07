@@ -117,6 +117,8 @@ for i in range(len(members)):
       lonlist=lons[0,:]
       lonlist=np.asarray(lonlist)
       latlist=np.asarray(latlist)
+
+      #create interpolation function
       f=interpolate.interp2d(lonlist,latlist,precip,kind='linear')
       for k in range(len(slats)):
         znew=np.round(f((360+slons[k]),slats[k]),3)

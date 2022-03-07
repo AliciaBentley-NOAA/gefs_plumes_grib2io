@@ -13,11 +13,14 @@ import matplotlib.pyplot as plt
 from scipy import interpolate
 import sys
 
+#input argument in YYYYMMDDHH
 ymdh = str(sys.argv[1])
 
 def find_nearest(array,value):
   idx=(np.abs(array-value)).argmin()
   return idx
+
+#station info arrays
 slist=[]
 slats=[]
 slons=[]
@@ -27,6 +30,7 @@ with open('gfsxstations.txt','r') as f:
     slist.append(x[0])
     slats.append(float(x[1]))
     slons.append(float(x[2]))
+#column headers
 members=['time','date','c00','p01','p02','p03','p04','p05','p06','p07','p08','p09','p10','p11','p12','p13','p14','p15','p16','p17','p18','p19','p20','p21','p22','p23','p24','p25','p26','p27','p28','p29','p30','GFS']
 type=['rain','snow','freezing rain','ice pellets']
 membertype=['time','date','rain','snow','freezing rain','ice pellets']
@@ -44,21 +48,26 @@ lastcycle=dtime - datetime.timedelta(hours=6)
 lastymd=lastcycle.strftime("%Y%m%d")
 lasthour=lastcycle.strftime("%H")
 fhours1=list(range(closest,furthest,3))
+
+#array that gets written to csv. Everything will be put in it 
 nmbtotal=np.empty((len(slist),len(fhours1),len(members)+1),dtype='object')
 nmbrain=np.empty((len(slist),len(fhours1),len(members)+1),dtype='object')
 nmbsnow=np.empty((len(slist),len(fhours1),len(members)+1),dtype='object')
 nmbfreezing=np.empty((len(slist),len(fhours1),len(members)+1),dtype='object')
 nmbice=np.empty((len(slist),len(fhours1),len(members)+1),dtype='object')
 print(nmbtotal.shape)
+
 for i in range(len(members)):
   print(members[i])
   ptotal=0
+  #do different things for different columns and forecast hours
   for j in range(len(fhours1)):
     if i==0:
       nmbtotal[:,j,i]=fhours1[j]
     elif i==1:
       nmbtotal[:,j,i]=date_list[j].strftime("%m-%d-%Y:%H")
     elif i>1 and members[i]!='GFS':
+      #grib message order changes from f00 to f03 to f06
       if j==0:
         nmbtotal[:,j,i]=0.0
         snowtotal=np.zeros((361,720))
@@ -87,6 +96,8 @@ for i in range(len(members)):
       latlist=np.asarray(latlist)
       precip[catsnow==0]=0
       snowtotal=snowtotal+precip
+
+      #create interpolation function
       f=interpolate.interp2d(lonlist,latlist,snowtotal,kind='linear')
       for k in range(len(slats)):
         nearestlat=find_nearest(latlist,slats[k])
@@ -104,6 +115,8 @@ for i in range(len(members)):
               nmbtotal[k,j,i]=np.round(np.absolute(znew),5)
         else:
           nmbtotal[k,j,i]=nmbtotal[k,j-1,i]
+
+    #get GFS data
     else:      
       if j==0:
         nmbtotal[:,j,34]=0.0
@@ -134,6 +147,8 @@ for i in range(len(members)):
       latlist=np.asarray(latlist)
       precip[catsnow==0]=0
       snowtotal=snowtotal+precip
+
+      #create interpolation function
       f=interpolate.interp2d(lonlist,latlist,snowtotal,kind='linear')
       for k in range(len(slats)):
         nearestlat=find_nearest(latlist,slats[k])
@@ -152,11 +167,12 @@ for i in range(len(members)):
         else:
           nmbtotal[k,j,34]=nmbtotal[k,j-1,34]
 
-
+#compute mean
 for k in range(len(slats)):
   for j in range(len(fhours1)):
     nmbtotal[k,j,33]=np.round(np.sum(nmbtotal[k,j,2:33])/31.0,5)
 
+#write csv files
 for k in range(len(slats)):
   f = open("GEFS"+slist[k]+ymdh+"snow.csv","wt")
   try:

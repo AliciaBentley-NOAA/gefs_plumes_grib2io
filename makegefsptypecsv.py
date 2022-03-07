@@ -13,11 +13,14 @@ import matplotlib.pyplot as plt
 from scipy import interpolate
 import sys
 
+#input argument in YYYYMMDDHH
 ymdh = str(sys.argv[1])
 
 def find_nearest(array,value):
   idx=(np.abs(array-value)).argmin()
   return idx
+
+#station info arrays
 slist=[]
 slats=[]
 slons=[]
@@ -27,6 +30,7 @@ with open('gfsxstations.txt','r') as f:
     slist.append(x[0])
     slats.append(float(x[1]))
     slons.append(float(x[2]))
+#column headers
 members=['time','date','c00','p01','p02','p03','p04','p05','p06','p07','p08','p09','p10','p11','p12','p13','p14','p15','p16','p17','p18','p19','p20','p21','p22','p23','p24','p25','p26','p27','p28','p29','p30']
 type=['rain','snow','freezing rain','ice pellets']
 membertype=['time','date','rain','snow','freezing rain','ice pellets']
@@ -44,21 +48,26 @@ lastcycle=dtime - datetime.timedelta(hours=6)
 lastymd=lastcycle.strftime("%Y%m%d")
 lasthour=lastcycle.strftime("%H")
 fhours1=list(range(closest,furthest,3))
+
+#array that gets written to csv. Everything will be put in it 
 nmbtotal=np.empty((len(slist),len(fhours1),len(membertype)),dtype='object')
 nmbrain=np.empty((len(slist),len(fhours1),len(members)+1),dtype='object')
 nmbsnow=np.empty((len(slist),len(fhours1),len(members)+1),dtype='object')
 nmbfreezing=np.empty((len(slist),len(fhours1),len(members)+1),dtype='object')
 nmbice=np.empty((len(slist),len(fhours1),len(members)+1),dtype='object')
 print(nmbtotal.shape)
+
 for i in range(len(members)):
   print(members[i])
   ptotal=0
+  #do different things for different columns and forecast hours
   for j in range(len(fhours1)):
     if i==0:
       nmbtotal[:,j,i]=fhours1[j]
     elif i==1:
       nmbtotal[:,j,i]=date_list[j].strftime("%m-%d-%Y:%H")
     elif i>1 and members[i]!='GFS':
+      #grib message order changes from f00 to f03 to f06
       if j==0:
         grbsprev = grib2io.open('/gpfs/dell4/nco/ops/com/gefs/prod/gefs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(lasthour).zfill(2)+'z.pgrb2a.0p50.f003', mode='r')
         grbs = grib2io.open('/gpfs/dell4/nco/ops/com/gefs/prod/gefs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(lasthour).zfill(2)+'z.pgrb2a.0p50.f006', mode='r')
@@ -132,6 +141,8 @@ for i in range(len(members)):
           elif thisice==1:
             #print slist[k],'ice pellets'
             nmbice[k,j,i]=1
+
+#compute mean
 for k in range(len(slats)):
   for j in range(len(fhours1)):
     nmbtotal[k,j,2]= np.round((np.sum([x for x in nmbrain[k,j,:] if x != None])/31.0)*100,1)
@@ -139,7 +150,7 @@ for k in range(len(slats)):
     nmbtotal[k,j,4]= np.round((np.sum([x for x in nmbfreezing[k,j,:] if x != None])/31.0)*100,1)
     nmbtotal[k,j,5]= np.round((np.sum([x for x in nmbice[k,j,:] if x != None])/31.0)*100,1)
           
-
+#write csv files
 for k in range(len(slats)):
   f = open("GEFS"+slist[k]+ymdh+"ptype.csv","wt")
   try:
