@@ -69,8 +69,8 @@ for i in range(len(members)):
     elif i>1 and members[i]!='GFS':
       #grib message order changes from f00 to f03 to f06
       if j==0:
-        grbsprev = grib2io.open('/gpfs/dell4/nco/ops/com/gefs/prod/gefs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(lasthour).zfill(2)+'z.pgrb2a.0p50.f003', mode='r')
-        grbs = grib2io.open('/gpfs/dell4/nco/ops/com/gefs/prod/gefs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(lasthour).zfill(2)+'z.pgrb2a.0p50.f006', mode='r')
+        grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(lasthour).zfill(2)+'z.pgrb2a.0p50.f003', mode='r')
+        grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(lasthour).zfill(2)+'z.pgrb2a.0p50.f006', mode='r')
         precipnewc=grbs.select(shortName='APCP')[0].data()*.03937
         precipnewp=grbsprev.select(shortName='APCP')[0].data()*.03937
         catrain=grbs.select(shortName='CRAIN')[0].data()
@@ -87,7 +87,7 @@ for i in range(len(members)):
         precip=precipnewc-precipnewp
         
       elif (j%2)!=0:
-        grbs = grib2io.open('/gpfs/dell4/nco/ops/com/gefs/prod/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
+        grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
         precip=grbs.select(shortName='APCP')[0].data()*.03937
         catrain=grbs.select(shortName='CRAIN')[0].data()
         catsnow=grbs.select(shortName='CSNOW')[0].data()
@@ -99,8 +99,8 @@ for i in range(len(members)):
         catfreezing=np.asarray(catfreezing[::-1,:])
         catice=np.asarray(catice[::-1,:])
       else:
-        grbsprev = grib2io.open('/gpfs/dell4/nco/ops/com/gefs/prod/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j-1]).zfill(3), mode='r')
-        grbs = grib2io.open('/gpfs/dell4/nco/ops/com/gefs/prod/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
+        grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j-1]).zfill(3), mode='r')
+        grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
         precipnewc=grbs.select(shortName='APCP')[0].data()*.03937
         precipnewp=grbsprev.select(shortName='APCP')[0].data()*.03937
         catrain=grbs.select(shortName='CRAIN')[0].data()

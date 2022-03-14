@@ -73,13 +73,13 @@ for i in range(len(members)):
         snowtotal=np.zeros((361,720))
         continue
       elif (j%2)!=0:
-        grbs = grib2io.open('/gpfs/dell4/nco/ops/com/gefs/prod/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
+        grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
         precip=grbs.select(shortName='APCP')[0].data()*.03937
         catsnow=grbs.select(shortName='CSNOW')[0].data()
         precip=np.asarray(precip[::-1,:])
         catsnow=np.asarray(catsnow[::-1,:])
       else:
-        grbsprev = grib2io.open('/gpfs/dell4/nco/ops/com/gefs/prod/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j-1]).zfill(3), mode='r')
+        grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j-1]).zfill(3), mode='r')
         grbs = grib2io.open('/gpfs/dell4/nco/ops/com/gefs/prod/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
         precipnewc=grbs.select(shortName='APCP')[0].data()*.03937
         precipnewp=grbsprev.select(shortName='APCP')[0].data()*.03937
@@ -123,14 +123,14 @@ for i in range(len(members)):
         snowtotal=np.zeros((361,720))
         continue
       elif (j%2)!=0:
-        grbs = grib2io.open('/gpfs/dell1/nco/ops/com/gfs/prod/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
+        grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.2/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
         precip=grbs.select(shortName='APCP')[0].data()*.03937
         catsnow=grbs.select(shortName='CSNOW')[0].data()
         precip=np.asarray(precip[::-1,:])
         catsnow=np.asarray(catsnow[::-1,:])
 
       else:
-        grbsprev = grib2io.open('/gpfs/dell1/nco/ops/com/gfs/prod/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j-1]).zfill(3), mode='r')
+        grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.2/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j-1]).zfill(3), mode='r')
         grbs = grib2io.open('/gpfs/dell1/nco/ops/com/gfs/prod/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
         precipnewc=grbs.select(shortName='APCP')[0].data()*.03937
         precipnewp=grbsprev.select(shortName='APCP')[0].data()*.03937
