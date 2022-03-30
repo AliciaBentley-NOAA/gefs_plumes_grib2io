@@ -1,0 +1,341 @@
+body {
+  font: 12px sans-serif;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  //shape-rendering: crispEdges;
+}
+.feature {
+  fill: none;
+  stroke: black;
+  stroke-width: 1px;
+  stroke-linejoin: round;
+  }
+.selecting circle {
+  fill-opacity: .2;
+}
+.resize path {
+  fill: #666;
+  fill-opacity: .6;
+  stroke: #000;
+  stroke-width: 1px;
+}
+.selecting circle.selected {
+  stroke: #f00;
+}
+.brush .extent {
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+.svgclass {
+  background-color:#ffffff;
+}
+.pn {
+  background-color: #eae7e7;
+  height:2em;
+  font-size:14px;
+  position:absolute;
+  cursor:pointer;
+  width:200px;
+  color:black;
+  border-color:black;
+  border-style:solid;
+  border-width:1px;
+  border:none;
+  left:750px;
+  top:30px;
+  padding: 0px;
+  z-index:200;
+  /*-moz-box-shadow: 0 0 5px #888;
+  -webkit-box-shadow: 0 0 5px #888;
+  box-shadow: 0 0 5px #888;*/
+}
+.pn:hover {
+  background-color:#5288be;
+  color:white;
+}
+.land {
+  fill: #D3D3D3;
+  //fill: none;
+  }
+svg { overflow: hidden; }
+.voronoi path {
+  /*stroke:red; */
+  fill: none;
+  pointer-events: all;
+}
+.city--hover {
+  stroke: #000;
+}
+
+.focus text {
+  text-anchor: middle;
+  text-shadow: 0 1px 0 #f5f5f5, 1px 0 0 #f5f5f5, 0 -1px 0 #f5f5f5, -1px 0 0 #f5f5f5;
+}
+.ftext {
+  text-anchor: middle;
+  text-shadow: 0 1px 0 #f5f5f5, 1px 0 0 #f5f5f5, 0 -1px 0 #f5f5f5, -1px 0 0 #f5f5f5;
+}
+.fdtext {
+  text-anchor: middle;
+  text-shadow: 0 1px 0 #f5f5f5, 1px 0 0 #f5f5f5, 0 -1px 0 #f5f5f5, -1px 0 0 #f5f5f5;
+}
+
+
+.grid-background {
+  fill: #eae7e7;
+}
+
+.grid line {
+  stroke: #b2b2b2;
+  stroke-width: 1.5;
+}
+
+.grid .minor line {
+  stroke-opacity: .5;
+}
+
+.grid text {
+  display: none;
+}
+path3 {
+      stroke: black;
+      stroke-width: 1;
+      fill: none;
+}
+line {
+      stroke: black;
+      stroke-width: 1;
+      fill: none;
+}
+.freeline {
+      stroke: #004ab3;
+      stroke: #f347ff;
+      stroke-width: 1;
+      fill: none;
+}
+.axis line {
+  stroke: #000;
+}
+
+.axis path,
+.grid path {
+  display: none;
+}
+
+.voronoi--show path {
+  stroke: red;
+  stroke-opacity: .2;
+}
+input {
+  border: 1px dotted #a9a9a9; 
+  background: white; 
+  font-family: Sans-serif; 
+  font-size: 16px; 
+  color: #383838;
+}
+input:focus {
+  outline:none;
+}
+#ymin {
+  position: absolute;
+  left:85px;
+  top:630px;
+}
+#ymax {
+  position: absolute;
+  left:235px;
+  top:630px;
+}
+#sub {
+  position: absolute;
+  left: 400px;
+  top:630px;
+  background: none;
+}
+#clear {
+  position: absolute;
+  left: 535px;
+  top:630px;
+  background: none;
+}
+#sub:hover,
+#sub:focus {
+  outline: none;
+}
+button {
+  background-color: #fff;
+  border: 1px dotted #a9a9a9;
+  font-family: Sans-serif;
+}
+#text1 {
+  height:100px;
+  width:785px;
+}
+#textzoom {
+  height:50px;
+  width:200px;
+}
+#textqpf {
+  height:50px;
+  width:350px;
+}
+#textobs {
+  height:50px;
+  width:350px;
+}
+#texterror {
+  height:25px;
+  width:125px;
+  position:absolute;
+  top:600px;
+  left:1110px;
+  color:red;
+  margin:0;
+  padding:0;
+}
+.select {
+  cursor: pointer;
+  position: absolute;
+  display:inline-block;
+  font-size: 14px;
+  color: #000000;
+  width: 20%;
+  height: 2em;
+  left:0;right:0;
+  min-width:185px;
+  max-width:200px;
+  line-height:2em;
+  /*margin:1em auto 0em auto;*/
+  text-align:left;
+  vertical-align:middle;
+  top:50px;
+  left:180px;
+}
+
+.select-styled {
+  position: absolute; 
+  padding-left:1.5em;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #eae7e7;
+}
+ .select-styled:after {
+    content:"";
+    width: 0;
+    height: 0;
+    border: 7px solid transparent;
+    border-color: #000000 transparent transparent transparent;
+    position: absolute;
+    top: .75em;
+    right: 1em;
+  }
+  .select-styled:hover {
+    background-color: darken(#d3d3d3, 2);
+  }
+ /*.select-styled:active, .select-styled.active {*/
+ .select-styled.active {
+  background-color:#5288be;
+      color:#ffffff;
+}
+ /*.select-styled:active:after, .select-styled.active:after {*/
+ .select-styled.active:after {
+      top: .5em;
+      color:#ffffff;
+      border-color: transparent transparent #ffffff transparent;
+    }
+.uldropimage {
+  display: none; 
+  position: absolute;
+  border-radius:10px;
+  float:left;
+  top: 100%;
+  right: 0;
+  left: 0;
+  /*width: 200px;*/
+  z-index: 998;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 20em;
+  overflow:visible;
+  /*background-color: ;*/
+}
+.mainli {
+  margin:0;
+  /*padding:12px 0;*/
+  text-indent:1em;
+  /*text-align: center;*/
+  background:#b9cfe5;
+  height:2.5em;
+  line-height:2.5em;
+  position: relative;
+  display: list-item;
+  list-style:none;
+  cursor:pointer;
+  font-size:14px;
+  color:#000;
+}
+.mainli:hover {
+  background-color:#5288be;
+  color:#fff;
+}
+
+/* Page Headers rheader and lheader MUST be used one after the other with lheader first */
+div.rheader{
+    padding: 10px;
+    color: #FFFFFF;
+    background-color: #333333;
+    text-align: right;
+}
+div.lheader{
+    padding: 10px;
+    color: #FFFFFF;
+    background-color: #333333;
+    text-align: left;
+    float: left;
+}
+
+h1.header {
+    padding: 0;
+    margin: 0;
+}
+
+
+/*The following is for the left-hand side navigation menu */
+
+.leftvert
+        {
+    float: left;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    }
+
+#leftvert a:link, a:visited
+        {
+    display: block;
+    color: #FFFFFF;
+    background-color: #333333;
+    width: 125px;
+    font: 14px arial;
+    text-align: center;
+    font-weight: bold;
+    padding: 15px;
+    text-decoration: none;}
+
+#leftvert a:hover
+        {
+    background-color: #000066;}
+
+#leftvert li a:hover
+        {
+      background: #DDDDDD;
+      color: #000000;
+      border: none}
+

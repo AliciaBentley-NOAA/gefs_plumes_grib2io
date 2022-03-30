@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<title>EMC GEFS plumes</title>
+
+<style>
+
+body {
+  font: 12px sans-serif;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.feature {
+  fill: none;
+  stroke: black;
+  stroke-width: 1px;
+  stroke-linejoin: round;
+  }
+.selecting circle {
+  fill-opacity: .2;
+}
+.resize path {
+  fill: #666;
+  fill-opacity: .6;
+  stroke: #000;
+  stroke-width: 1px;
+}
+.selecting circle.selected {
+  stroke: #f00;
+}
+.brush .extent {
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+.land {
+  fill: #D3D3D3;
+  }
+svg { overflow: hidden; }
+.voronoi path {
+  fill: none;
+  pointer-events: all;
+}
+.city--hover {
+  stroke: #000;
+}
+
+.focus text {
+  text-anchor: middle;
+  text-shadow: 0 1px 0 #f5f5f5, 1px 0 0 #f5f5f5, 0 -1px 0 #f5f5f5, -1px 0 0 #f5f5f5;
+}
+.ftext {
+  text-anchor: middle;
+  text-shadow: 0 1px 0 #f5f5f5, 1px 0 0 #f5f5f5, 0 -1px 0 #f5f5f5, -1px 0 0 #f5f5f5;
+}
+.fdtext {
+  text-anchor: middle;
+  text-shadow: 0 1px 0 #f5f5f5, 1px 0 0 #f5f5f5, 0 -1px 0 #f5f5f5, -1px 0 0 #f5f5f5;
+}
+
+
+.grid-background {
+  fill: #eae7e7;
+}
+
+.grid line {
+  stroke: #b2b2b2;
+  stroke-width: 1.5;
+}
+
+.grid .minor line {
+  stroke-opacity: .5;
+}
+
+.grid text {
+  display: none;
+}
+path3 {
+      stroke: black;
+      stroke-width: 1;
+      fill: none;
+}
+line {
+      stroke: black;
+      stroke-width: 1;
+      fill: none;
+}
+.freeline {
+      stroke: #004ab3;
+      stroke: #f347ff;
+      stroke-width: 1;
+      fill: none;
+}
+.axis line {
+  stroke: #000;
+}
+
+.axis path,
+.grid path {
+  display: none;
+}
+
+.voronoi--show path {
+  stroke: red;
+  stroke-opacity: .2;
+}
+input {
+  border: 1px dotted #a9a9a9; 
+  background: white; 
+  font-family: Sans-serif; 
+  padding: 10px 10px; 
+  font-size: 16px; 
+  margin: 20px 10px 20px 50px; 
+  color: #383838;
+}
+input:focus {
+  outline:none;
+}
+
+#sub:hover,
+#sub:focus {
+  outline: none;
+}
+button {
+  background-color: #fff;
+  border: 1px dotted #a9a9a9;
+  font-family: Sans-serif;
+}
+#text1 {
+  height:100px;
+  width:785px;
+}
+#textzoom {
+  height:50px;
+  width:200px;
+}
+#textqpf {
+  height:50px;
+  width:350px;
+}
+#textobs {
+  height:50px;
+  width:350px;
+}
+#texterror {
+  height:25px;
+  width:125px;
+  position:absolute;
+  top:600px;
+  left:1110px;
+  color:red;
+  margin:0;
+  padding:0;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="leaflet.css">
+<link rel="stylesheet" type="text/css" href="rtma.css">
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://d3js.org/d3-queue.v3.min.js"></script>
+<script src="https://npmcdn.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.5/bluebird.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/1.4/rgbcolor.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stackblur-canvas/1.4.1/stackblur.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvg/dist/browser/canvg.min.js"></script>
+<script type="text/javascript" src="downloadSVGByClass.js"></script>
+<script type="text/javascript" src="stationname.js"></script>
+</head>
+
+<body>
+<input type="button" value="Download Plot"  id="download" class="pn"></input>
+<div id="text1" style="position: absolute; top: 720px;left:25px;padding-top:5px;z-index:3">
+  <p> 
+    <span><b>About the plumes:</b> Data for each station is interpolated from a 0.5-degree grid for both the GEFS (gray lines for control and perturbed members; black for mean) and GFS (blue line), though the native resolution of the GFS is ~13 km vs ~33 km in the GEFS. The precipitation-type plot uses the closest gridpoint to each station as opposed to interpolation and does not contain a trace for the GFS. In the 3-h accumulation plots, F00 values are derived from the previous cycle's forecast. All observed data are derived from hourly station reports. Zoom for more CONUS stations.<br><br>This site is not operational; therefore, data will be missing occasionally. The contact for this site is: alicia.bentley@noaa.gov 
+  </span>
+</p>
+</div>
+<div id="main" style="position:absolute;"></div>
+<div id="map" style="position:absolute; top: 205px; left: 835px; height: 345px; width: 445px"></div>
+<div id="brush" style="position:absolute; top: 100px; left: 800px;"></div>
+<div id="menu" style="position:absolute; top:575px; left:895px;"><b>Variable:  </b><select></select></div>
+<div id="menucycle" style="position:absolute; top:575px; left:1075px;"><b>Cycle:  </b><select></select></div>
+<form name="myform" onSubmit="return handleClick()">
+  <div id="sub">
+    <input type="Submit"  onclick="fclicked='set'" value="Set y axis">
+  </div>
+  <div id="ymin">
+    <input type="text" id="myValmin" style="width:100px;" placeholder="y min">
+  </div>
+  <div id="ymax">
+    <input type="text" id="myValmax" style="width:100px;" placeholder="y max">
+  </div>
+  <div id="clear">
+    <input type="Submit"  onclick="fclicked='reset'" value="Reset y axis">
+  </div>
+</form> 
+<input type="checkbox" id="myCheck" style="position:absolute; top:620px; left:870px;">
+<div id="textqpf" style="position: absolute; top: 625px;left:945px;">
+  <p>
+    <span>start total accumulated QPF and snowfall at 0 inches <br>when adjusting forecast hours spanned</span>
+  </p>
+</div>
+<input type="checkbox" id="myobsCheck" style="position:absolute; top:660px; left:870px;">
+<div id="textobs" style="position: absolute; top: 665px;left:945px;">
+  <p>
+    <span>plot observed temperature, dew point, wind, SLP, and <br> accumulated precipitation when available</span>
+  </p>
+</div>
+<script>
+//Written by C. Guastini using D3 Javascript library created by Mike Bostock, updated by A. Bentley
+var fclicked;
+
+//function that moves line to front on mouseover
+d3.selection.prototype.moveToFront = function() {
+  return this.each(function(){
+    this.parentNode.appendChild(this);
+  });
+};
+
+d3.select("#download")
+.on('click', function(){
+    // Get the d3js SVG element and save using saveSvgAsPng.js
+     d3.select("body").append("canvas")
+    .attr("id","canvas");
+
+      source=downloadSVG("svgclass");
+
+
+    canvg('canvas',source.source[0]);
+    binaryblob();
+//If IE construct different blob
+if (navigator.appVersion.toString().indexOf('.NET') > 0) {
+        var blob=canvas.msToBlob();
+        window.navigator.msSaveBlob(blob, stationname+"_"+filedate+".png");
+  }
+else
+{
+    var a = document.createElement("a");
+	  a.download = stationname+"_"+filedate+".png";
+	  a.href = canvas.toDataURL("image/png");
+          var event=new MouseEvent('click');
+	  a.dispatchEvent(event)
+}
+d3.select("canvas").remove()
+function binaryblob(){
+	var byteString = atob(document.querySelector("canvas").toDataURL().replace(/^data:image\/(png|jpg);base64,/, "")); 
+	var ab = new ArrayBuffer(byteString.length);
+	var ia = new Uint8Array(ab);
+	for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    var dataView = new DataView(ab);
+    try {
+	blob = new Blob([dataView], {type: "image/png"});
+    }catch(e) {
+           window.BlobBuilder = window.BlobBuilder ||
+                                window.WebKitBlobBuilder ||
+                                window.MozBlobBuilder ||
+                                window.MSBlobBuilder;
+           if (window.BlobBuilder) {
+               var bb = new BlobBuilder();
+               bb.append(dataView);
+               blob = bb.getBlob("image/png");
+           }
+      }
+
+
+	var DOMURL = self.URL || self.webkitURL || self;
+	newurl = DOMURL.createObjectURL(blob);
+
+}
+
+});
+///End of Download button function
+
+
+Array.prototype.clean = function(deleteValue) {
+  for (var i = 0; i < this.length; i++) {
+    if (this[i] == deleteValue) {         
+      this.splice(i, 1);
+      i--;
+    }
+  }
+  return this;
+};
+
+
+var monthNames = [
+  "January", "February", "March",
+  "April", "May", "June", "July",
+  "August", "September", "October",
+  "November", "December"
+];
+var currentdate=new Date(Date.UTC(2021,4,17,6,0,0));
+var subdate=new Date(Date.UTC(2021,4,17,6,0,0));
+var obsdate=new Date(Date.UTC(2021,4,16,23,0,0));
+var sday=currentdate.getUTCDate();
+var smonthindex=currentdate.getUTCMonth();
+var syear=currentdate.getUTCFullYear();
+var shour=currentdate.getUTCHours();
+var strdate=(("0"+shour).slice(-2)+' UTC '+("0"+sday).slice(-2)+' '+monthNames[smonthindex]+' ' +syear+' cycle');
+var filedate=(syear+("0"+(smonthindex+1)).slice(-2)+("0"+sday).slice(-2)+("0"+shour).slice(-2));
+var date_list=[]
+var date_objects=[]
+
+//Set number of cycles in dropdown menu
+for (i=0; i<69;i++) {
+  subdate.setUTCHours(currentdate.getUTCHours()-(6*i));
+  subdate=new Date(currentdate-(360*i*60000));
+  minusyear=subdate.getUTCFullYear();
+  minusmonth=("0"+(subdate.getUTCMonth()+1)).slice(-2);
+  minusday=("0"+subdate.getUTCDate()).slice(-2);
+  minushour=("0"+subdate.getUTCHours()).slice(-2);
+  date_list.push(minusyear+minusmonth+minusday+minushour);
+  date_objects.push(minushour+' UTC '+minusday+' '+monthNames[subdate.getUTCMonth()]+' ' +minusyear+' cycle');
+}
+//station info
+var hinames=['PAKP','PAFM','PFYU','PAWD','PGUA','NSTU','TJSJ', 'KLIT', 'KPHX', 'KLAX', 'KSFO', 'KDEN', 'KJAX', 'KMIA', 'KATL', 'KBOI', 'KORD', 'KDDC', 'KMSY', 'KBOS', 'KCAR', 'KANJ', 'KMSP', 'KMCI', 'KSTL', 'KGTF', 'KILM', 'KBIS', 'KABQ', 'KTPH', 'KBUF', 'KMFR', 'KDFW', 'KBRO', 'KLBB', 'KSLC', 'KIAD', 'KSEA', 'KDTW', 'KINL', 'KHSE', 'KFAR', 'KVTN', 'KLGA', 'KEUG', 'KCHS', 'KGEG', 'KSHR', 'KTUS', 'KFLG', 'KFAT', 'KMRY', 'KSAC', 'KSAN', 'KGJT', 'KEYW', 'KMCO', 'KDSM', 'KIND', 'KACK', 'KDLH', 'KGGW', 'KWEY', 'KRDU', 'KGFK', 'KOMA', 'KLAS', 'KRNO', 'KOKC', 'KPDX', 'KPDT', 'KPIT', 'KRAP', 'KFSD', 'KMEM', 'KBNA', 'KCRP', 'KDRT', 'KELP', 'KIAH', 'KUIL', 'KRIW', 'KEET', 'KMOB', 'KFSM', 'KPGA', 'KYUM', 'KEDW', 'KPSP', 'KRDD', 'KVBG', 'KPUB', 'KTLH', 'KTPA', 'KMCN', 'KDVN', 'KSUX', 'KPIH', 'KFWA', 'KGLD', 'KICT', 'KLOU', 'KPAH', 'KLCH', 'KSHV', 'KBGR', 'KPWM', 'KGLR', 'KGRR', 'KAXN', 'KJAN', 'KHVR', 'KMSO', 'KNKT', 'KGSO', 'KLBF', 'KEKO', 'KELY', 'KWMC', 'KALB', 'KSYR', 'KCLE', 'KILN', 'KTUL', 'KDLS', 'KPHL', 'KUNV', 'KCAE', 'KGSP', 'KABR', 'KPIR', 'KAMA', 'KAUS', 'KCDS', 'KLRD', 'KROA', 'KORF', 'KBTV', 'KYKM', 'KGRB', 'KMKE', 'KHTS', 'KCYS', 'KCOD', 'KHSV', 'KGCN', 'KINW', 'KNID', 'KAKO', 'KASE', 'KCAG', 'KDRO', 'KGXY', 'KLAA', 'KLIC', 'KHFD', 'KGNV', 'KMLB', 'KVRB', 'KAHN', 'KAGS', 'KSAV', 'KCID', 'KDBQ', 'KALO', 'KCOE', 'KDEC', 'KPIA', 'KRFD', 'KEVV', 'KGYY', 'KLAF', 'KSBN', 'KGCK', 'KHYS', 'KLBL', 'KMHK', 'KBWG', 'KLEX', 'KBTR', 'KPOE', 'KSBY', 'KAUG', 'KAPN', 'KFNT', 'KLAN', 'KMKG', 'KMQT', 'KBRD', 'KPKD', 'KCOU', 'KSTJ', 'KGWO', 'KTUP', 'KBZN', 'KCTB', 'KHLN', 'KMLS', 'KAVL', 'KCLT', 'KFAY', 'KACY', 'KCVS', 'KHMN', 'KROW', 'KPOU', 'KUCA', 'KCMH', 'KDAY', 'KADM', 'KEND', 'KAST', 'KERI', 'KTRI', 'KCHA', 'KTYS', 'KABI', 'KCLL', 'KGGG', 'KTYR', 'KSPS', 'KCDC', 'KENV', 'KRIC', 'KMPV', 'KHQM', 'KEAU', 'KMSN', 'KEKN', 'KMRB', 'PANC', 'PANT', 'PABR', 'PABE', 'PACD', 'PASY', 'PAFA', 'PAKN', 'PADQ', 'PAOT', 'PAMC', 'PAOM', 'PASN', 'PAYA', 'PHTO', 'PHLI', 'PHMO', 'KJKL', 'KSGF', 'KMAF', 'KSJT', 'PABT', 'PALU', 'PAEH', 'PACZ', 'PACV', 'PASC', 'PABI', 'PADL', 'PAGA', 'PAGK', 'PAHN', 'PAHO', 'PAIL', 'PAIM', 'PAOR', 'PAPG', 'PASI', 'PATK', 'PATA', 'PATC', 'PAUN', 'PADU', 'KOZR', 'KELD', 'KJBR', 'KTXK', 'KDUG', 'KSAD', 'KSOW', 'KACV', 'KBFL', 'KBYS', 'KBIH', 'KBLH', 'KNJK', 'KMOD', 'KEED', 'KPRB', 'KSTS', 'KALS', 'KVPS', 'KRSW', 'KPAM', 'KABY', 'KAMG', 'KCSG', 'KVLD', 'PHKO', 'KBRL', 'KFOD', 'KOTM', 'KSPW', 'KBYI', 'KSUN', 'KLWS', 'KMYL', 'KSMN', 'KCNU', 'KMLU', 'KEPM', 'KRWF', 'KRST', 'KRRT', 'KIRK', 'KPOF', 'KSZL', 'KNMM', 'KPIB', 'KBIL', 'KDLN', 'KGDV', 'KGPI', 'KLWT', 'KDIK', 'KJMS', 'KMIB', 'KISN', 'KCDR', 'KGRI', 'KMCK', 'KONL', 'KBFF', 'KCON', 'KGUP', 'KCNM', 'KDMN', 'KHOB', 'KTCS', 'KLOL', 'KGTB', 'KMSS', 'KFDY', 'KGAG', 'KHBR', 'KMLC', 'KBKE', 'KBNO', 'KLKV', 'KOTH', 'KRDM', 'KREO', 'KAVP', 'KBFD', 'KJST', 'KMDT', 'KFLO', 'KHON', 'KMBG', 'KATY', 'KCSV', 'KDYR', 'KDHT', 'KFST', 'KJCT', 'KLFK', 'KMRF', 'KPSX', 'KACT', 'KLGU', 'KVEL', 'KCHO', 'KBLI', 'KEPH', 'KHYR', 'KLSE', 'KCWA', 'KBKW', 'KPKB', 'KBPI', 'KCPR', 'KGCC', 'KJAC', 'KRWL', 'KRKS', 'KWRL','KAAA','KTNB','KORE','KISP','KASD','K2C2','KBWI','KBDR','KPVD','KHUL','KBLV','KFYV','KTOP','KLNK','KCVG','KBGM','KDAB','KMWL','KHIB','KSTC','KCOS','KDPG','KSLE','KSMP','KSAF','KLVS','KPRC','KONT','PAJN','KPBI','KMGW','KSAT','KMGM','PHNL','KBLU','KNHK','KCBE','K2WX','KCRW']
+var hilats=[68.13,67.11,66.57,60.13,13.57,-14.33,18.43,34.73, 33.43, 33.93, 37.62, 39.85, 30.5, 25.8, 33.63, 43.57, 41.98, 37.77, 30.0, 42.37, 46.87, 46.47, 44.88, 39.3, 38.75, 47.47, 34.27, 46.77, 35.05, 38.05, 42.93, 42.38, 32.9, 25.92, 33.67, 40.77, 38.93, 47.45, 42.23, 48.57, 35.23, 46.93, 42.87, 40.78, 44.13, 32.9, 47.62, 44.77, 32.13, 35.13, 36.78, 36.58, 38.5, 32.73, 39.12, 24.55, 28.42, 41.53, 39.72, 41.25, 46.85, 48.22, 44.63, 35.9, 47.95, 41.32, 36.07, 39.5, 35.38, 45.6, 45.7, 40.5, 44.05, 43.58, 35.07, 36.12, 27.77, 29.37, 31.82, 30.0, 47.93, 43.07, 33.18, 30.68, 35.33, 36.92, 32.63, 34.88, 33.82, 40.52, 34.73, 38.28, 30.4, 27.97, 32.68, 41.62, 42.38, 42.92, 40.98, 39.37, 37.65, 38.22, 37.07, 30.13, 32.45, 44.8, 43.65, 45.02, 42.88, 45.87, 32.32, 48.55, 46.92, 34.9, 36.1, 41.12, 40.82, 39.3, 40.9, 42.75, 43.12, 41.42, 39.43, 36.2, 45.62, 39.87, 40.85, 33.93, 34.9, 45.45, 44.38, 35.22, 30.18, 34.43, 27.55, 37.32, 36.9, 44.47, 46.57, 44.48, 42.95, 38.37, 41.15, 44.52, 34.65, 35.95, 35.03, 35.67, 40.17, 39.23, 40.5, 37.15, 40.42, 38.07, 39.27, 41.73, 29.7, 28.1, 27.65, 33.95, 33.37, 32.12, 41.88, 42.4, 42.55, 47.77, 39.83, 40.67, 42.2, 38.05, 41.62, 40.42, 41.7, 37.92, 38.85, 37.03, 39.13, 36.97, 38.03, 30.53, 31.05, 38.33, 44.32, 45.07, 42.97, 42.78, 43.17, 46.53, 46.4, 46.9, 38.82, 39.77, 33.5, 34.27, 45.78, 48.6, 46.6, 46.43, 35.43, 35.22, 34.98, 39.45, 34.37, 32.85, 33.3, 41.63, 43.15, 40.0, 39.9, 34.28, 36.32, 46.15, 42.08, 36.48, 35.03, 35.82, 32.42, 30.58, 32.38, 32.37, 33.98, 37.7, 40.72, 37.52, 44.2, 46.97, 44.87, 43.13, 38.88, 39.4, 61.17, 55.03, 71.28, 60.78, 55.2, 52.72, 64.8, 58.68, 57.75, 66.87, 62.97, 64.5, 57.15, 59.52, 19.72, 21.97, 21.13, 37.6, 37.23, 31.95, 31.37, 66.92, 68.88, 58.65, 61.78, 60.5, 70.2, 64.0, 59.05, 64.73, 62.15, 59.25, 59.63, 59.75, 66.0, 62.97, 56.82, 57.07, 62.3, 65.17, 65.57, 63.88, 53.9, 31.28, 33.22, 35.83, 33.45, 31.47, 32.85, 34.27, 40.98, 35.43, 35.28, 37.37, 33.62, 32.82, 37.62, 34.77, 35.67, 38.5, 37.43, 30.47, 26.53, 30.07, 31.53, 31.53, 32.52, 30.78, 19.73, 40.77, 42.53, 41.1, 43.17, 42.55, 43.5, 46.37, 44.9, 45.12, 37.67, 32.52, 44.92, 44.55, 43.9, 48.93, 40.1, 36.77, 38.72, 32.53, 31.47, 45.8, 45.25, 47.12, 48.32, 47.03, 46.8, 46.93, 48.42, 48.17, 42.83, 40.97, 40.2, 42.47, 41.87, 43.2, 35.52, 32.33, 32.27, 32.67, 33.23, 40.07, 44.07, 44.93, 41.02, 36.3, 34.98, 34.88, 44.85, 43.6, 42.17, 43.42, 44.25, 42.58, 41.33, 41.8, 40.32, 40.2, 34.18, 44.38, 45.55, 44.9, 35.95, 36.0, 36.02, 30.92, 30.5, 31.23, 30.37, 28.72, 31.62, 41.78, 40.45, 38.13, 48.8, 47.3, 46.02, 43.88, 44.78, 37.8, 39.35, 42.58, 42.9, 44.33, 43.62, 41.78, 41.6, 43.97,40.15,36.2,42.57,40.8,30.35,32.37,39.17,41.17,41.72,46.12,38.53,36.02,39.07,40.85,39.05,42.22,29.18,32.78,47.38,45.55,38.82,40.2,44.9,47.28,35.62,35.65,34.65,34.05,58.37,26.68,39.65,29.53,32.3,21.33,39.28,38.28,39.62,45.57,38.38]
+var hilons=[-151.74,-157.86,-145.27,-149.42,144.92,-170.72,-66.0,-92.23, -112.02, -118.38, -122.37, -104.65, -81.68, -80.28, -84.45, -116.23, -87.93, -99.97, -90.25, -71.02, -68.02, -84.37, -93.23, -94.73, -90.37, -111.38, -77.9, -100.75, -106.62, -117.08, -78.73, -122.87, -97.02, -97.42, -101.82, -111.97, -77.45, -122.32, -83.33, -93.4, -75.62, -96.82, -100.55, -73.88, -123.22, -80.03, -117.53, -106.97, -110.95, -111.67, -119.72, -121.85, -121.5, -117.18, -108.52, -81.75, -81.33, -93.67, -86.3, -70.07, -92.2, -106.62, -111.08, -78.78, -97.18, -95.9, -115.17, -119.77, -97.6, -122.62, -118.83, -80.27, -103.05, -96.75, -89.98, -86.68, -97.5, -100.92, -106.38, -95.37, -124.55, -108.47, -86.78, -88.25, -94.37, -111.45, -114.58, -117.87, -116.5, -122.3, -120.58, -104.5, -84.35, -82.53, -83.65, -90.58, -96.38, -112.57, -85.18, -101.7, -97.43, -85.67, -88.77, -93.22, -93.83, -68.82, -70.3, -84.68, -85.52, -95.4, -90.08, -109.77, -114.1, -76.88, -79.95, -100.67, -115.78, -114.85, -117.8, -73.8, -76.1, -81.85, -83.8, -95.88, -121.17, -75.23, -77.83, -81.12, -82.22, -98.42, -100.28, -101.72, -97.68, -100.28, -99.47, -79.97, -76.2, -73.15, -120.53, -88.13, -87.9, -82.55, -104.8, -109.02, -86.78, -112.15, -110.72, -117.67, -103.22, -106.87, -107.52, -107.77, -104.62, -102.68, -103.67, -72.65, -82.28, -80.65, -80.42, -83.33, -81.97, -81.2, -91.72, -90.7, -92.4, -116.82, -88.85, -89.68, -89.1, -87.52, -87.42, -86.93, -86.32, -100.72, -99.27, -100.97, -96.68, -86.42, -84.6, -91.15, -93.2, -75.5, -69.8, -83.57, -83.75, -84.58, -86.23, -87.57, -94.13, -95.07, -92.22, -94.92, -90.08, -88.77, -111.17, -112.37, -111.98, -105.88, -82.53, -80.95, -78.88, -74.57, -103.32, -106.08, -104.5, -73.88, -75.38, -82.88, -84.22, -97.02, -97.92, -123.88, -80.18, -82.4, -85.2, -83.98, -99.68, -96.37, -94.72, -95.4, -98.5, -113.1, -114.02, -77.32, -72.57, -123.93, -91.47, -89.35, -79.85, -77.98, -150.02, -131.57, -156.8, -161.85, -162.72, -174.12, -147.88, -156.65, -152.5, -162.58, -155.62, -165.43, -170.22, -139.67, -155.05, -159.33, -157.18, -83.32, -93.38, -102.2, -100.5, -151.52, -166.13, -162.07, -166.03, -145.5, -148.47, -145.73, -158.52, -156.93, -145.45, -135.52, -151.5, -154.92, -153.7, -141.93, -132.97, -135.35, -150.1, -152.1, -167.92, -160.8, -166.53, -85.72, -92.82, -90.65, -93.98, -109.58, -109.63, -110.0, -124.1, -119.05, -116.62, -118.35, -114.72, -115.67, -120.95, -114.62, -120.63, -122.82, -105.87, -86.52, -81.75, -85.57, -84.2, -82.5, -84.95, -83.27, -156.05, -91.13, -94.17, -92.45, -95.22, -113.77, -114.28, -117.02, -116.1, -113.87, -95.48, -92.03, -67.02, -95.08, -92.5, -95.33, -92.55, -90.32, -93.53, -88.57, -89.32, -108.55, -112.55, -104.78, -114.25, -109.47, -102.8, -98.67, -101.33, -103.63, -103.1, -98.32, -100.58, -98.67, -103.58, -71.5, -108.8, -104.25, -107.72, -103.22, -107.27, -118.57, -75.72, -74.85, -83.67, -99.77, -99.05, -95.78, -117.82, -118.95, -120.4, -124.25, -121.15, -117.87, -75.72, -78.63, -78.83, -76.77, -79.73, -98.23, -100.42, -97.15, -85.08, -89.4, -102.55, -102.92, -99.77, -94.75, -104.02, -96.25, -97.23, -111.85, -109.52, -78.45, -122.53, -119.52, -91.45, -91.25, -89.67, -81.12, -81.42, -110.1, -106.47, -105.55, -110.73, -107.2, -109.07, -107.95,-89.33,-81.65,-72.28,-73.1,-89.82,-106.47,-76.68,-73.13,-71.43,-67.8,-89.83,-94.17,-95.63,-96.77,-84.67,-75.98,-81.07,-98.07,-92.83,-94.05,-104.68,-112.92,-123,-121.33,-106.1,-105.13,-112.42,-117.58,-134.58,-80.1,-79.92,-98.47,-86.4,-157.92,-120.7,-76.40,-78.77,-103.52,-81.59]
+var variable="qpf"
+var variable2="QPF"
+var variable3=["qpf","qpf3","2mt","2mdew","2mrh","10mwind","850t","850wind","pw","cape","shear","ptype","snow","thick","slp"];
+var options=["QPF", "3-h QPF","2-m T","2-m Td","2-m RH","10-m wind","850-hPa T","850-hPa wind","PW","CAPE","Shear","P-type","Snow","Thickness","SLP"];
+var unitlist=["in","in","F","F","%","kt","C","kt","in","J/kg","kt","%","in","dam","hPa"];
+var ylabels=["Total Accumulated QPF (inches)", "3-h Accumulated QPF (inches)","2-m Temperature (F)","2-m Dew point Temperature (F)","2-m Relative Humidity (%)","10-m Wind Speed (kt)","850-hPa Temperature (C)","850-hPa Wind Speed (kt)","Precipitable Water (in)","Surface CAPE (J/kg)","Surface to 500-hPa Shear Magnitude (kt)","Probability of > 0.01 inches in the previous 3-h period (percent)","Total Accumulated Snowfall using 10:1 snow:liquid ratio (inches)","850 to 700 hPa thickness (dam)","Sea-level Pressure (hPa)"];
+thisylabel="Total Accumulated QPF (inches)"
+//stationname="KIAD";
+units="in";
+
+    //Retrieve portion of URL that comes after the ?
+    var args = window.location.href.split('?')[1];
+
+    //Default stationname to KIAD
+    var stationname = "KIAD";
+
+    //Put in a try/catch block in case theres no argument passed
+    try{
+
+    //Split into an array of arguments separated by &
+    var args = args.split("&");
+
+    //Iterate over every argument and search for "stationname"
+    for(var i=0; i<args.length; i++){
+
+            //If the first part of the argument is "stationname" (e.g., "stationname=KALB")
+            if(args[i].split("=")[0] == "stationname"){
+
+            //retrieve the second part of the argument (the stationname value)
+            stationname = args[i].split("=")[1];
+            }
+    }
+    }
+
+    //If no argument passed, or encountered an error, simply ignore
+    catch(err){}
+
+    if(hinames.indexOf(stationname) == -1){
+            stationname = "KIAD";
+    }
+
+//Decare object containing data about the currently displayed map
+imageObj = {};
+
+//Initialize the page
+initialize();
+
+//Initialize function
+function initialize(){
+
+	//Set image object based on default variables
+	imageObj = {
+		stationname: stationname,
+	};
+
+	//Change stationname based on passed argument, if any
+	var passed_stationname = stationname;
+	if(passed_stationname!=""){
+		if(searchByName(passed_stationname,hinames)>=0){
+			imageObj.stationname = passed_stationname;
+		}
+	}
+                        //Generate URL
+                        generate_url();
+
+}
+
+//initial file name
+var tort="GEFS"+stationname+filedate+variable+".csv";
+
+//height and width of page elements
+var margin = {top: 100, right: 10, bottom: 200, left: 50}
+    width = 850 - margin.right - margin.left,
+    height = 775 - margin.top - margin.bottom;
+var hmap=325,
+    wmap=450,
+    centered;
+var hbrush=100,
+    wbrush=510;
+//initial transition time in milliseconds
+transitiontime=750;  
+var keep=0
+var yminkeep=0
+var ymaxkeep=100
+
+//function to handle setting y axis
+function handleClick(event){
+  if (fclicked=='set') {
+  yminkeep=document.getElementById("myValmin").value;
+  ymaxkeep=document.getElementById("myValmax").value;
+  transitiontime=750;  
+  if (!yminkeep || !ymaxkeep) {
+    keep=0;
+     updateData()}
+  else {
+      keep=1;
+      if (variable2!="P-type") {
+        wasdp=0;
+        }
+      updateData()}
+  return false;
+ }
+ else if (fclicked=='reset'){
+  transitiontime=750;  
+  yminkeep=document.getElementById("myValmin").value;
+  ymaxkeep=document.getElementById("myValmax").value;
+  document.getElementById("myValmax").value="";
+  document.getElementById("myValmin").value="";
+    keep=0;
+      if (variable2!="P-type") {
+        wasdp=0;
+        }
+    updateData();
+    return false;
+  }
+  
+}
+var wasdp=0;
+var prevvar="QPF";
+//function for variable selection
+var menu = d3.select("#menu select")
+    .on("change",change);
+menu.selectAll("option")
+  .data(options)
+  .enter().append("option")
+    .text(function(d) { return d; });
+menu.property("value","QPF");
+function change() {
+keep=0
+  document.getElementById("myValmax").value="";
+  document.getElementById("myValmin").value="";
+var tran = d3.transition()
+    .duration(1)
+ variable2=menu.property("value");
+  transitiontime=750;
+for (i=0; i<options.length;i++) {
+    if (variable2==options[i]) {
+      variable=variable3[i];
+      thisylabel=ylabels[i];
+      units=unitlist[i];
+    }
+   if (variable2=="P-type") {
+      wasdp=1;
+      transitiontime=1;
+      prevvar="P-type";
+      keep=1;
+      yminkeep=0;
+      ymaxkeep=100;
+     // istart=istart+8;
+      //transitiontime=1;
+      color=d3.scale.ordinal()
+        .range(["#2D8B1C","#2B60B5","#B12989","#562B8A"]);
+     }
+   else {
+        if (prevvar!="P-type") {
+        wasdp=0;}
+        else {wasdp=1;transitiontime=1;}
+      //istart=0;
+      //GEFS plume line colors
+      color=d3.scale.ordinal()
+        .range(["#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#000000","#0d77ce"]);
+}
+ }
+      prevvar=variable2;
+ tort="GEFS"+stationname+filedate+variable+".csv";
+    tran.each(updateData);
+}
+document.getElementById("myobsCheck").checked=false;
+var always1 = d3.select("#myobsCheck")
+    .on("change",changeobs);
+
+function changeobs() {
+  if (document.getElementById("myobsCheck").checked==true) {
+    //drawobs()
+     updateData()
+  }
+  else {
+    linesvg.selectAll(".dot").remove();
+    linesvg.selectAll(".pline").remove();
+     updateData()
+  }
+}
+
+
+document.getElementById("myCheck").checked=false;
+var always0 = d3.select("#myCheck")
+    .on("change",changezero);
+function changezero() {
+  
+    
+  //drawobs()
+  transitiontime=750;
+  wasdp=0;
+  if (document.getElementById("myCheck").checked==false && variable2=="QPF") {
+    thisylabel="Total Accumulated QPF (inches)";
+  }
+  else if (document.getElementById("myCheck").checked==false && variable2=="Snow") {
+    thisylabel="Total Accumulated Snowfall using 10:1 snow:liquid ratio (inches)"
+  }
+  updateData();
+  }
+//handling cycle menu
+var menucycle = d3.select("#menucycle select")
+    .on("change",changecycle);
+menucycle.selectAll("option")
+  .data(date_list)
+  .enter().append("option")
+    .text(function(d) { return d; });
+menucycle.property("value",date_list[0]);
+function changecycle() {
+var trancycle = d3.transition()
+    .duration(1)
+ filedate=menucycle.property("value");
+transitiontime=750;  
+for (i=0; i<date_list.length;i++) {
+    if (filedate==date_list[i]) {
+      strdate=date_objects[i];}
+  }
+  if (variable2!="P-type") {
+    wasdp=0;
+    }
+ tort="GEFS"+stationname+filedate+variable+".csv";
+  trancycle.each(updateData);
+}
+  
+
+//creating main window for chart
+var linesvg = d3.select("div#main").append("svg")
+    .attr("class","svgclass")
+    .attr("width", width + margin.right + margin.left)
+    .attr("height", height + margin.top + margin.bottom)
+   .append("g")
+    .attr("id","chartarea")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+//gray background
+linesvg.append("rect")
+    .attr("width", width + margin.right + margin.left)
+    .attr("height", height + margin.top + margin.bottom)
+    .attr("x",0)
+    .attr("y",0)
+    .attr("transform", "translate(-50,-100)")
+    .attr("fill","#ffffff");
+    
+linesvg.append("rect")
+    .attr("class", "grid-background")
+    .attr("width", width-60)
+    .attr("height", height);
+
+//clip lines when data extends outside window
+linesvg.append("defs").append("clipPath")
+  .attr("id","clip")
+ .append("rect")
+  .attr("width",width-60)
+  .attr("height",height+4)
+  .attr("transform","translate(0,-1)");
+var mymap = L.map('map',{worldCopyJump:true}).setView([38.0,-97.5],3);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+maxZoom:6,minZoom:2}).addTo(mymap);
+
+
+bstation="";
+function onMarkerClick(e){
+  //console.log(e.target.options.name);
+    transitiontime=750
+    clicked=1 
+    if (variable2!="P-type") {wasdp=0;}
+    tort="GEFS"+e.target.options.name+filedate+variable+".csv";
+    stationname=e.target.options.name;
+    imageObj.stationname = stationname
+    //Generate URL
+    generate_url();
+  for ( blah in circlea._layers ) {
+    var obj = circlea._layers[blah];
+    if (obj.options.name==stationname) {
+    obj._path.attributes.fill.value='#f00';
+    }
+    else{
+      if (obj.options.name==bstation && mymap.getZoom()>=5) {
+    //    console.log(bstation);
+        circlea.removeLayer(obj);
+        circlebb.addLayer(obj);
+       }
+      obj._path.attributes.fill.value='#fff';
+    }
+   }
+  var isb = 0;
+  for ( blah in circlebb._layers ) {
+    var obj = circlebb._layers[blah];
+    if (obj._path) {
+    if (obj.options.name==stationname) {
+    //console.log("it is b");
+    obj._path.attributes.fill.value='#f00';
+    isb=1;
+    bstation=obj.options.name;
+    circlea.addLayer(obj);
+    circlebb.removeLayer(obj);
+    mymap.removeLayer(circlea);
+    mymap.addLayer(circlea);
+  for ( blah in circlea._layers ) {
+    var obj = circlea._layers[blah];
+    if (obj.options.name==stationname) {
+    obj._path.attributes.fill.value='#f00';
+      }
+    }
+    }
+    else{
+      obj._path.attributes.fill.value='#fff';
+    }
+   }
+   }
+    updateData();
+}
+function onMouseover(e) {
+  this._path.attributes.fill.value='#f00';
+}
+function onMouseout(e) {
+  if (this.options.name!=stationname) {
+    this._path.attributes.fill.value='#fff';
+  }
+}
+pointdata=[]
+function initc() {
+circlea= new L.FeatureGroup();
+circlebb= new L.FeatureGroup();
+customMarker = L.CircleMarker.extend({options: {name:'custom name'}});
+for (i=0; i<hilons.length;i++) {
+    if (i<145 || hinames[i].slice(0,1)=="P") {
+    circlea.addLayer(L.circleMarker([+hilats[i],+hilons[i]],{weight:1,color:'#000',fillColor:'#fff',fillOpacity:1,radius:5,title:hinames[i],name:hinames[i]})
+      .on('click',onMarkerClick)
+      .on('mouseover',onMouseover)
+      .on('mouseout',onMouseout))
+      var resflag=0;}
+    else {resflag=1;
+    circlebb.addLayer(L.circleMarker([+hilats[i],+hilons[i]],{weight:1,color:'#000',fillColor:'#fff',fillOpacity:1,radius:7,title:hinames[i],name:hinames[i]})
+      .on('click',onMarkerClick)
+      .on('mouseover',onMouseover)
+      .on('mouseout',onMouseout))
+}
+  }
+}
+initc()
+    mymap.addLayer(circlea);
+  for ( blah in circlea._layers ) {
+    var obj = circlea._layers[blah];
+    if (obj.options.name==stationname) {
+    obj._path.attributes.fill.value='#f00';
+    }
+x
+   }
+mymap.on('zoomend',function() {
+  var currentZoom=mymap.getZoom();
+  for ( blah in circlea._layers ) {
+    var obj = circlea._layers[blah];
+    //console.log(obj);
+    obj._radius = currentZoom+2;
+  }
+  if (currentZoom>=5) {
+  for ( blah in circlea._layers ) {
+    var obj = circlea._layers[blah];
+      if (obj.options.name==bstation && obj.options.name!==stationname) {
+      //if (bstation.some(elem => elem==obj.options.name)) {
+        circlea.removeLayer(obj);
+        circlebb.addLayer(obj);
+       }
+   }
+    //mymap.removeLayer(circlebb);
+    mymap.addLayer(circlebb);
+    //console.log(circlebb);
+  for ( blah in circlebb._layers ) {
+    var obj = circlebb._layers[blah];
+    if (obj._path) {
+    if (obj.options.name==stationname) {
+    obj._path.attributes.fill.value='#f00';
+    }
+    else{
+      obj._path.attributes.fill.value='#fff';
+    }
+   }
+   }
+  }
+  if (currentZoom==5) {
+  for ( blah in circlebb._layers ) {
+    var obj = circlebb._layers[blah];
+    obj._radius = 7;
+  }
+  for ( blah in circlea._layers ) {
+    var obj = circlea._layers[blah];
+    obj._radius = 7;
+  }
+  }
+  if (currentZoom==6) {
+  for ( blah in circlebb._layers ) {
+    var obj = circlebb._layers[blah];
+    obj._radius = 9;
+  }
+  for ( blah in circlea._layers ) {
+    var obj = circlea._layers[blah];
+    obj._radius = 9;
+  }
+  }
+  if (currentZoom<=4) {
+    mymap.removeLayer(circlebb);
+  }
+});
+  var clicked=0;
+
+//gray background
+linesvg.append("rect")
+    .attr("class", "grid-background")
+    .attr("width", width-60)
+    .attr("height", height);
+//axes
+var xb = d3.scale.linear().range([50,wbrush-50]);
+      xb.domain([-6,198]);
+var x = d3.time.scale.utc().range([0,width-60]);
+var y = d3.scale.linear().range([height,0]);
+//brush semicircles
+var arc=d3.svg.arc()
+  .outerRadius(25)
+  .startAngle(0)
+  .endAngle(function(d, i) { return i ? -Math.PI : Math.PI; });
+//define brush
+var brush = d3.svg.brush()
+  .x(xb)
+  .extent([-6,198])
+  .on("brushstart",brushstart)
+  .on("brush",brushmove)
+  .on("brushend",brushend);
+    
+
+var brushsvg = d3.select("div#brush").append("svg")
+    .attr("width",wbrush)
+    .attr("height",hbrush)
+.append("g")
+    .attr("transform", "translate(0,50)");
+var bdata = d3.range(0,195,3);
+faxis=brushsvg.append("g")
+  .attr("class","x axis")
+  .call(d3.svg.axis().scale(xb).orient("bottom").tickValues([0,12,24,36,48,60,72,84,96,108,120,132,144,156,168,180,192]));
+    faxis.append("text")
+      .attr("x",110)
+      .attr("dy","-2.75em")
+      .style("font-size","12px")
+      .text("Choose forecast hours to span by adjusting gray box");
+var circleb = brushsvg.append("g").selectAll("circle")
+  .data(bdata)
+  .enter().append("circle")
+.attr("transform", function(d) { return "translate(" + xb(d) + "," + 1 + ")"; })
+    .attr("r", 2.5);
+var brushg=brushsvg.append("g")
+  .attr("class","brush")
+  .call(brush);
+brushg.selectAll("rect")
+    .attr("height", 50)
+    .attr("transform", "translate(0,-20)");
+brushg.selectAll(".resize").append("path")
+  .attr("transform", "translate(0,5)")
+    .attr("d", arc);
+brushstart();
+brushmove();
+
+//define default values and indices
+minhr=0;
+maxhr=192;
+istart=0;
+iend=64;
+
+for (i=0; i<bdata.length;i++) {
+  if (bdata[i]>=minhr) {
+    istart=i;
+    break;
+  }
+}
+for (i=0; i<bdata.length;i++) {
+  if (maxhr<bdata[i]) {
+    iend=i;
+    break;
+  }
+}
+
+function brushstart() {
+  var s = brush.extent();
+  brushsvg.classed("selecting", true);
+  minhr=s[0];
+  maxhr=s[1];
+}
+function brushmove() {
+  var s = brush.extent();
+  minhr=s[0];
+  maxhr=s[1];
+  circleb.classed("selected", function(d) { return s[0] <= d && d <= s[1];})
+
+
+
+}
+
+function brushend() {
+  brushsvg.classed("selecting", true);
+  if (minhr == maxhr) {
+    minhr=0;
+    maxhr=192;
+    brush.extent([-6,198]);
+    brushg.call(brush);
+    var s = brush.extent();
+    circleb.classed("selected", function(d) { return s[0] <= d && d <= s[1];})
+   }
+  if (minhr<0) {minhr=0;}
+  if (maxhr>192) {maxhr=192;}
+for (i=0; i<bdata.length;i++) {
+  if (bdata[i]>=minhr) {
+    istart=i;
+    break;
+  }
+}
+for (i=0; i<bdata.length;i++) {
+  if (maxhr==192) {
+     iend=64;
+     break
+  }
+  else if (maxhr<=bdata[i]) {
+    iend=i-1;
+    break;
+  }
+}
+transitiontime=1
+    updateData();
+}
+
+
+
+//define voronoi for mousing over lines
+var voronoi=d3.geom.voronoi()
+  .x(function(d) { return x(d.date); })
+  .y(function(d) { return y(d.qpf); })
+  .clipExtent([[0,0],[width-35, height]]);
+var xAxis = d3.svg.axis().scale(x).ticks(d3.time.hour.utc,12).tickSize(-height)
+var xAxis2 = d3.svg.axis().scale(x).ticks(d3.time.hour.utc,12).tickFormat(d3.time.format.utc("%HZ/%d"));
+var yAxis = d3.svg.axis().scale(y)
+    .orient("left");
+var line = d3.svg.line()
+    .interpolate("linear")
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.qpf); });
+//update line function
+function toline() {
+  return d3.svg.line()
+    .interpolate("linear")
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { 
+         return y(d.qpf); });
+}
+function topline() {
+  return d3.svg.line()
+    .interpolate("linear")
+    .x(function(d) { return x(d.time); })
+    .y(function(d) { 
+         return y(d.precip); });
+}
+
+var parseDate=d3.time.format.utc("%m-%d-%Y:%H").parse;
+var parseobsDate=d3.time.format.utc("%y%m%d/%H00").parse;
+
+// GEFS plume line colors
+var color=d3.scale.ordinal()
+    .range(["#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#000000","#0d77ce"])
+
+//initialize plot
+initial(tort)
+function initial(filename) {
+var pp = d3.csv(filename,function(error,data) {
+    if (error) {console.log("there was an error");};
+    color.domain(d3.keys(data[0]).filter(function(key) { return key !== "time" && key!== "date";}));
+    data.forEach(function(d) {
+      d.date=parseDate(d.date);
+   });
+    var perts = color.domain().map(function(name) {
+      return {
+        name: name,
+        values: data.map(function(d) {
+          return {city: name, time: d.time, qpf: +d[name],date: d.date};
+      })
+    };
+   });
+    x.domain(d3.extent(data,function(d) { return d.date; }));
+    y.domain([0,d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; })+.25; })]);
+    ymaxkeep=d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; })+.25; });
+    yminkeep=0
+
+  var perturbations = linesvg.append("g")
+    .attr("class","perturbations")
+   .selectAll("path")
+     .data(perts)
+   .enter().append("path")
+    .attr("stroke-width",3)
+    .attr("fill","none")
+    .attr("clip-path","url(#clip)")
+    .attr("d",function(d) {d.line=this; return line(d.values); })
+    .style("stroke", function(d) { return color(d.name); })
+    .style("stroke-width", function(d) { if (d.name=="mean") {
+      return 6;}
+      else {return 3;}
+      })
+    .call(line);
+
+//freezing line
+        var fli=d3.select(".perturbations")
+          .append("g")
+          .attr("id","gfli");
+         // .attr("id","fli");
+
+
+    linesvg.append("g")
+      .attr("class", "grid")
+      .attr("transform", "translate(0," + height + ")")
+      .style("stroke-dasharray",("2,2"))
+      .call(xAxis)
+    linesvg.append("g")
+      .attr("class","x axis")
+      .attr("transform","translate(0," + height + ")")
+      .call(xAxis2)
+    .append("text")
+      .attr("x",335)
+      .attr("dy","3.25em")
+      .style("font-size","12px")
+      .text("Time (UTC)");
+    linesvg.append("g")
+      .attr("class","y axis")
+      .call(yAxis)
+    linesvg.append("g")
+        .attr("class","ylabel")
+        .append("text")
+        .attr("transform","rotate(-90)")
+        .attr("y",6)
+        .attr("dy",".9em")
+        .style("font-size","12px")
+        .style("text-anchor","end")
+        .text(thisylabel);
+    linesvg.append("g")
+      .attr("class","title")
+      .append("text")
+      //.attr("x", (width / 2))             
+      .attr("x", 375)             
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("font-weight", "bold") 
+        .text("EMC's GEFS plumes for: " +stationname);
+    linesvg.append("g")
+      .attr("class","titlesub")
+      .append("text")
+      //.attr("x", (width / 2))             
+      .attr("x", 375)             
+        .attr("y", 25 - (margin.top / 2))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .text(strdate);
+    var focus = linesvg.append("g")
+      .attr("transform","translate(-100,-100)")
+      .attr("class","focus");
+    focus.append("circle")
+      .attr("stroke","white")
+      .attr("stroke-width",1.5)
+      .attr("r",5.0);
+    focus.append("text")
+      .style("font-size","12px")
+      .attr("y",-10);
+    var voronoiGroup=linesvg.append("g")
+      .attr("class","voronoi");
+//remove coincident points for voronoi
+var thisdata=d3.nest()
+          .key(function(d) { return x(d.time) + "," + y(d.qpf); })
+          .rollup(function(v) {
+                  return v[0]; })
+          .entries(d3.merge(perts.map(function(d) { return d.values; })))
+          .map(function(d) { return d.values; })
+        
+
+
+tv=voronoiGroup.selectAll("path")
+        .data(voronoi(thisdata),function(d) {return d;})
+    tv.enter().append("path")
+      .attr("d", function(d) { return "M" + d.join("L") + "Z"; })
+      .datum(function(d) { return d.point; })
+      .on("mouseover", mouseover)
+      .on("mouseout", mouseout);
+
+
+//mouseover line behavior (same in updateData())
+function mouseover(d) {
+   for (i=0; i<perts.length;i++) {
+       if (d.city==perts[i].name) {
+          var j=i;
+        }
+     }
+    var linef = d3.select(perts[j].line);
+     linef.style("stroke", "#cc2c1b")
+            linef.style("stroke-width",6);
+    focus.attr("transform", "translate(" + x(d.date) + "," + y(d.qpf) + ")");
+    focus.select("text").text(d.city+"   F"+d.time+"   "+Math.round(d.qpf*100)/100+" "+units).style("font-weight","bold");
+var sel = d3.select(this);
+  linef.moveToFront();
+    
+     if (variable2=="2-m T" || variable2=="850-hPa T") {
+       flin1=d3.selectAll("#gfli");
+       flin1[0][0].parentNode.appendChild(flin1[0][0]);
+       }
+  }
+
+  function mouseout(d) {
+   for (i=0; i<perts.length;i++) {
+       if (d.city==perts[i].name) {
+          var j=i;
+         }
+       if (perts[i].name=="mean") {
+          var k=i;
+         }
+      perts[i].line.parentNode.appendChild(perts[i].line);
+     if (variable2=="2-m T" || variable2=="850-hPa T") {
+       flin1=d3.selectAll("#gfli");
+       flin1[0][0].parentNode.appendChild(flin1[0][0]);
+       }
+     }
+    var linef=d3.select(perts[j].line);
+    linef.style("stroke", function(d) { return color(d.name); })
+         .style("stroke-width", function(d) { if (d.name=="mean") {
+            return 6;}
+            else {return 3;}
+            })
+    focus.attr("transform", "translate(-100,-100)");
+  }
+
+});
+}
+
+//every time something is clicked this function is called
+function updateData() {
+  d3.csv(tort,function(error, data) {
+      if (error) {
+        d3.select("div#texterror").remove();
+        et=d3.select("body").append("div")
+          .attr("id","texterror");
+        et.append("p")
+          .text("cycle not available")
+          .style("margin",0)
+          .style("padding",0);
+      }
+      else {
+        d3.select("div#texterror").remove();
+      }
+          
+      color.domain(d3.keys(data[0]).filter(function(key) { return key !== "time" && key!== "date";}));
+      data.forEach(function(d) {
+        d.date=parseDate(d.date);
+        d.time=+d.time
+     });
+      var perts = color.domain().map(function(name) {
+        return {
+          name: name,
+          values: data.map(function(d) {
+            return {city: name, time: d.time, qpf: +d[name],date: d.date};
+        })
+      };
+     });
+      var pertsvor = color.domain().map(function(name) {
+        return {
+          name: name,
+          values: data.map(function(d) {
+            return {city: name, time: d.time, qpf: +d[name],date: d.date};
+        })
+      };
+     });
+      for (i=0; i<perts.length;i++) {
+         perts[i].values=perts[i].values.splice(istart,(iend-istart+1));
+     }
+      for (i=0; i<pertsvor.length;i++) {
+         pertsvor[i].values=pertsvor[i].values.splice(istart,(iend-istart+1));
+     }
+      if (variable2=="QPF" && document.getElementById("myCheck").checked==true && (iend-istart)>=0) {
+        for (i=0; i<perts.length;i++) {
+          var qpf0 = perts[i].values[0].qpf;
+          for (j=0; j<perts[i].values.length;j++) {
+            perts[i].values[j].qpf=Math.round((perts[i].values[j].qpf - qpf0)*100000)/100000;
+            pertsvor[i].values[j].qpf=Math.round((pertsvor[i].values[j].qpf - qpf0)*100000)/100000;
+         
+          }
+        }  
+        thisylabel="Total Accumulated QPF (inches) beginning F"+perts[3].values[0].time;
+      }
+      else if (variable2=="Snow" && document.getElementById("myCheck").checked==true && (iend-istart)>=0) {
+        for (i=0; i<perts.length;i++) {
+          var qpf0 = perts[i].values[0].qpf;
+          for (j=0; j<perts[i].values.length;j++) {
+            perts[i].values[j].qpf=Math.round((perts[i].values[j].qpf - qpf0)*100000)/100000;
+            pertsvor[i].values[j].qpf=Math.round((pertsvor[i].values[j].qpf - qpf0)*100000)/100000;
+         
+          }
+        }  
+        thisylabel="Total Accumulated Snowfall using 10:1 snow:liquid ratio (inches) beginning F"+perts[3].values[0].time;
+      }
+
+maxt=-999;
+mint=999;
+maxtd=-999;
+mintd=999;
+minp=999;
+maxp=-999;
+minw=999;
+maxw=-999;
+maxslp=-999;
+minslp=999;
+
+function returnmm() {
+  return new Promise(function(resolve,reject) {
+  if (document.getElementById("myobsCheck").checked==true && (variable2=="2-m T" || variable2=="2-m Td" || variable2=="QPF" || variable2=="3-h QPF" || variable2=="10-m wind" || variable2=="SLP")) {
+  var iyear=parseInt(filedate.substr(0,4),10);
+  var imonth=parseInt(filedate.substr(4,2),10)-1;
+  var iday=parseInt(filedate.substr(6,2),10);
+  var ihour=parseInt(filedate.substr(8,2),10);
+
+  var fileform = new Date(Date.UTC(iyear,imonth,iday,ihour,0,0));
+  var difhours=(obsdate-fileform)/(60000*60);
+  //console.log(difhours);
+  lod=[]
+  if (difhours > 192) {
+    for (i=0;i<=192;i++) {
+      if (i % 24 == 0) {
+      lod.push(new Date(Date.parse(fileform)+(60000*60*i)))
+      }
+    }
+    //console.log(lod);
+  }
+  else if (difhours > 0) {
+    for (i=0;i<=difhours;i++) {
+      if (i % 24 == 0) {
+      lod.push(new Date(Date.parse(fileform)+(60000*60*i)))
+      }
+     }
+    //console.log(lod);
+   }
+  else { lod=lod;}
+  fdlist=[]
+  //console.log(stationname.slice(0,1));
+  if (stationname.slice(0,1)=="P" || stationname.slice(0,1)=="T" || stationname.slice(0,1)=="N") {
+    //console.log("it was p");
+    var thisname=stationname.slice(0);
+    }
+  else {
+    //console.log("no");
+    var thisname=stationname.slice(1);
+}
+  for (var i = 0;i<lod.length;++i) {
+    minusyear=lod[i].getUTCFullYear();
+    minusmonth=("0"+(lod[i].getUTCMonth()+1)).slice(-2);
+    minusday=("0"+(lod[i].getUTCDate())).slice(-2);
+    minushour=("0"+(lod[i].getUTCHours())).slice(-2);
+    fdlist.push(thisname+"_"+minusyear+minusmonth+minusday+"obs.txt");
+  }
+//console.log(fdlist);
+
+var qqq = d3.queue();
+toload=[]
+
+
+function ignoreError(task, file, callback) {
+  task(file,function(error,data) { 
+    return callback(null,data);
+  });
+}
+
+
+for (var i = 0;i<fdlist.length;++i) {
+  qqq.defer(ignoreError,d3.text,fdlist[i]);
+}
+  qqq.awaitAll(analyze);
+
+
+
+function analyze(error, cities) {
+  if (error) { console.log(error); }
+  var templist=[];
+  var dewlist=[];
+  var windlist=[];
+  var slplist=[];
+  var timelist=[];
+  var ptimelist=[];
+  var timelistw=[];
+  var preciplist=[];
+  var thistime=0;
+  cities.clean(undefined);
+  for (var i=0;i<cities.length;++i) {
+  hourlist=d3.csv.parseRows(cities[i]);
+  for (var j=0;j<hourlist.length;++j) {
+    var res=hourlist[j][0].match(/\S+/g);
+    if (res.length>1) {
+      timelist.push(parseobsDate(res[1]));
+      thistime=parseobsDate(res[1]);
+      if (+res[2]>-9000) {
+        templist.push(Math.round((+res[2]*1.8+32)*1000)/1000);
+      } else{
+        templist.push(undefined);
+      }
+      if (+res[3]>-9000) {
+        dewlist.push(Math.round((+res[3]*1.8+32)*1000)/1000);
+      } else{
+        dewlist.push(undefined);
+      }
+      if (+res[4]>-9000) {
+        windlist.push(Math.round((+res[4])*1000)/1000);
+      } else{
+        windlist.push(undefined);
+      }
+      if (+res[7]>-9000) {
+        slplist.push(Math.round((+res[7])*1000)/1000);
+      } else{
+        slplist.push(undefined);
+      }
+      //}  
+      }else {
+      //console.log(res[0]);
+        if (+res[0]>-9000) {
+          preciplist.push(Math.round((+res[0])*10000)/10000);
+          //ptimelist.push(thistime);
+        } else{ 
+          preciplist.push(0.0);
+        }
+    }
+    }
+}
+//console.log(ptimelist);
+//console.log(preciplist);
+var hourspan=d3.range(bdata[istart]-3,bdata[iend]+3,3)
+
+
+
+var bL=new Date(Date.parse(fileform)+(bdata[istart]*60*60000));
+var bR=new Date(Date.parse(fileform)+(bdata[iend]*60*60000));
+var bL0=new Date(Date.parse(fileform)+(0*60*60000));
+var bR0=new Date(Date.parse(fileform)+(192*60*60000));
+var date_list3=[];
+var untime=[];
+for (var k=0;k<hourspan.length;++k) {
+  date_list3.push(new Date(Date.parse(fileform)+(hourspan[k]*60*60000)));
+  if (k>0) {
+  untime.push(undefined);}
+  }
+
+//console.log(date_list3);
+for (var k=0;k<date_list3.length-1;++k) {
+  var total3=0;
+  for (var j=0;j<timelist.length;++j) {
+    if (timelist[j]<=date_list3[k+1] && timelist[j]>date_list3[k]) {
+      total3=total3+preciplist[j];
+      untime[k]=total3;
+    }
+  }
+}
+//console.log(untime);
+//console.log(bL)
+//console.log(bR)
+//console.log(bdata[istart])
+//console.log(bdata[iend])
+//console.log(timelist);
+finobs=[];
+var firstp=0;
+var ptotal=0.0;
+var pind=0;
+if (document.getElementById("myCheck").checked==false && variable2=="QPF") {
+for (var k=0;k<timelist.length;++k) {
+  if (timelist[k]-bL0 >= 0) {
+    pind=k;
+    preciplist[k]=0.0;
+    break;
+  }
+}
+for (var k=pind;k<timelist.length;++k) {
+  ptotal=ptotal+preciplist[k];
+  preciplist[k]=ptotal;
+}
+for (var k=0;k<timelist.length;++k) {
+  if (timelist[k]-bL >= 0 && timelist[k]-bR <=0 ) {
+      finobs.push({time:timelist[k],temp:templist[k],dew:dewlist[k],precip:Math.round((preciplist[k]*100000))/100000,wind:windlist[k],slp:slplist[k]});
+      }
+  }
+} 
+
+else if (variable2=="3-h QPF") {
+for (var k=0;k<date_list3.length-1;++k) {
+  if (typeof untime[k] !== "undefined"){
+  finobs.push({time:date_list3[k+1],precip:Math.round((untime[k]*100000))/100000});
+  }
+}
+}
+else if (variable2=="QPF") {
+for (var k=0;k<timelist.length;++k) {
+  if (timelist[k]-bL >= 0 && timelist[k]-bR <=0 ) {
+    if (firstp==0) {
+      finobs.push({time:timelist[k],precip:0.0});
+      firstp+=1;
+      } else {
+      ptotal=ptotal+preciplist[k]
+      finobs.push({time:timelist[k],precip:Math.round((ptotal*100000))/100000});
+      firstp+=1;
+      }
+  }
+}
+}
+
+else{
+for (var k=0;k<timelist.length;++k) {
+  if (timelist[k]-bL >= 0 && timelist[k]-bR <=0 ) {
+      finobs.push({time:timelist[k],temp:templist[k],dew:dewlist[k],wind:windlist[k],slp:slplist[k]});
+      }
+  }
+}
+//}
+    
+
+    //drawobs(finobs)
+    resolve(finobs);
+  }
+}
+  else {
+    resolve(0);
+    d3.selectAll(".dot").remove();
+    linesvg.selectAll(".pline").remove();
+  }
+});
+}
+      
+returnmm().then(function(result) {
+  if (result!=0) {
+tlist=[]
+tdlist=[]
+plist=[]
+wlist=[]
+preslist=[]
+//p3list=[]
+for (var k=0;k<result.length;++k) {
+   tlist.push(result[k].temp);
+   tdlist.push(result[k].dew);
+   plist.push(result[k].precip);
+   wlist.push(result[k].wind);
+   preslist.push(result[k].slp);
+  }
+    maxt=d3.max(tlist);
+    mint=d3.min(tlist);
+    maxtd=d3.max(tdlist);
+    mintd=d3.min(tdlist);
+    maxp=d3.max(plist);
+    minp=d3.min(plist);
+    maxw=d3.max(wlist);
+    minw=d3.min(wlist);
+    maxslp=d3.max(preslist);
+    minslp=d3.min(preslist);
+    typeof(minslp)!=="undefined" ? minslp=minslp : minslp=9999;
+    typeof(maxslp)!=="undefined" ? maxslp=maxslp : maxslp=-9999;
+    typeof(mint)!=="undefined" ? mint=mint : mint=9999;
+    typeof(maxt)!=="undefined" ? maxt=maxt : maxt=-9999;
+    typeof(mintd)!=="undefined" ? mintd=mint : mintd=9999;
+    typeof(maxtd)!=="undefined" ? maxtd=maxtd : maxtd=-9999;
+    typeof(minp)!=="undefined" ? minp=minp : minp=9999;
+    typeof(maxp)!=="undefined" ? maxp=maxp : maxp=-9999;
+    typeof(minw)!=="undefined" ? minw=minw : minw=9999;
+    typeof(maxw)!=="undefined" ? maxw=maxw : maxw=-9999;
+  }
+      x.domain([d3.min(perts,function(d) {return d3.min(d.values,function(v) {return v.date; });}),d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.date; }); })]);
+      if (keep==1) {
+        y.domain([yminkeep,ymaxkeep]);
+    }
+  else if (variable2=="2-m T") {
+        y.domain([Math.min(d3.min(perts,function(d) {return d3.min(d.values,function(v) {return v.qpf; });}),mint)-5.0,Math.max(d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; }); }),maxt)+5.0]);
+        ymaxkeep=Math.max(d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; }); }),maxt)+5.0;
+        yminkeep=Math.min(d3.min(perts,function(d) { return d3.min(d.values, function(v) { return v.qpf; }); }),mint)-5.0;
+      }
+  else if (variable2=="SLP") {
+        y.domain([Math.min(d3.min(perts,function(d) {return d3.min(d.values,function(v) {return v.qpf; });}),minslp)-5.0,Math.max(d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; }); }),maxslp)+5.0]);
+        ymaxkeep=Math.max(d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; }); }),maxslp)+5.0;
+        yminkeep=Math.min(d3.min(perts,function(d) { return d3.min(d.values, function(v) { return v.qpf; }); }),minslp)-5.0;
+      }
+  else if (variable2=="2-m Td") {
+        y.domain([Math.min(d3.min(perts,function(d) {return d3.min(d.values,function(v) {return v.qpf; });}),mintd)-5.0,Math.max(d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; }); }),maxtd)+5.0]);
+        ymaxkeep=Math.max(d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; }); }),maxtd)+5.0;
+        yminkeep=Math.min(d3.min(perts,function(d) { return d3.min(d.values, function(v) { return v.qpf; }); }),mintd)-5.0;
+      }
+  else if (variable2=="QPF") {
+        y.domain([Math.min(d3.min(perts,function(d) {return d3.min(d.values,function(v) {return v.qpf; });}),minp),Math.max(d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; }); }),maxp)+.25]);
+        ymaxkeep=Math.max(d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; }); }),maxp)+.25;
+        yminkeep=Math.min(d3.min(perts,function(d) { return d3.min(d.values, function(v) { return v.qpf; }); }),minp);
+      }
+  else if (variable2=="3-h QPF") {
+        y.domain([Math.min(d3.min(perts,function(d) {return d3.min(d.values,function(v) {return v.qpf; });}),minp),Math.max(d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; }); }),maxp)+.1]);
+        ymaxkeep=Math.max(d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; }); }),maxp)+.1;
+        yminkeep=Math.min(d3.min(perts,function(d) { return d3.min(d.values, function(v) { return v.qpf; }); }),minp);
+      }
+  else if (variable2=="10-m wind" || variable2=="850-hPa wind") {
+        y.domain([0,Math.max(d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; }); }),maxw)+2.5]);
+        ymaxkeep=Math.max(d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; }); }),maxw)+2.5;
+        yminkeep=0;
+      }
+  else if (variable2=="850-hPa T") {
+        y.domain([d3.min(perts,function(d) {return d3.min(d.values,function(v) {return v.qpf; });})-2.5,d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; })+2.5; })]);
+        ymaxkeep=d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; })+2.5; });
+        yminkeep=d3.min(perts,function(d) { return d3.min(d.values, function(v) { return v.qpf; })-2.5; });
+      }
+  else if (variable2=="Thickness") {
+        y.domain([d3.min(perts,function(d) {return d3.min(d.values,function(v) {return v.qpf; });})-2.0,d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; })+2.0; })]);
+        ymaxkeep=d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; })+2.0; });
+        yminkeep=d3.min(perts,function(d) { return d3.min(d.values, function(v) { return v.qpf; })-2.0; });
+      }
+      else {
+        y.domain([d3.min(perts,function(d) {return d3.min(d.values,function(v) {return v.qpf; });}),d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; }); })]);
+        ymaxkeep=d3.max(perts,function(d) { return d3.max(d.values, function(v) { return v.qpf; }); });
+        yminkeep=d3.min(perts,function(d) { return d3.min(d.values, function(v) { return v.qpf; }); });
+        }
+      for (i=0; i<pertsvor.length;i++) {
+        for (j=0;j<pertsvor[i].values.length;j++) {
+          if (pertsvor[i].values[j].qpf>ymaxkeep || pertsvor[i].values[j].qpf<yminkeep) {
+             pertsvor[i].values.splice(j,1);
+             j=j-1
+          }
+        }
+      }
+     var linesvg = d3.select("div#main");
+     var t0 = linesvg.transition().duration(1);
+     t0.selectAll(".x.axis").call(xAxis2);
+     t0.selectAll(".grid").call(xAxis);
+     var t1 = linesvg.transition().duration(transitiontime);
+     if (variable2=="2-m T" || variable2=="850-hPa T") {
+     //d3.selectAll(".freeline").remove();
+        if (variable2=="2-m T") {
+          var fnum=[32];
+          var fnumy=32;
+        } else {
+          var fnum=[32];
+          var fnumy=0;
+        }
+        var fli=d3.select("#gfli");
+        var flin=fli.selectAll("line")
+          .data(fnum,function(d) {return d; });
+        //console.log(flin);
+        flin.exit().remove();
+        flin.attr("class","freeline").transition().duration(transitiontime)
+          .attr("clip-path","url(#clip)")
+          .attr("x1",0)
+          .attr("x2",width-60)
+          .attr("y1",y(fnumy))
+          .attr("y2",y(fnumy));
+        flin.enter().append("line")
+          .attr("clip-path","url(#clip)")
+          .attr("class","freeline").transition().duration(transitiontime)
+          //.attr("class","freeline")
+          .attr("x1",0)
+          .attr("x2",width-60)
+          .attr("y1",y(fnumy))
+          .attr("y2",y(fnumy));
+     flin1=d3.selectAll("#gfli");
+     flin1[0][0].parentNode.appendChild(flin1[0][0]);
+     }else {
+     d3.selectAll(".freeline").remove();
+    }
+    
+     t1.selectAll(".ylabel").selectAll("text").text(thisylabel);
+     t1.selectAll(".y.axis").call(yAxis);
+     linesvg.selectAll("path")
+     //transition lines for new data
+     //console.log(perts);
+     var dp = linesvg.selectAll(".perturbations").selectAll("path")
+        .data(perts);
+     if (wasdp==1 && variable2!="P-type") {
+        dp.exit().remove();
+        dp
+            .attr("clip-path","url(#clip)")
+            .attr("fill","none")
+            .attr("stroke-width",3)
+            .attr("clip-path","url(#clip)")
+            .attr("d",function(d) {d.line=this; return line(d.values); })
+            .style("stroke", function(d) { return color(d.name); })
+            .style("stroke-width", function(d) { if (d.name=="mean") {
+              return 6;}
+              else {return 3;}
+              });
+       dp.enter().append("path")
+            .attr("clip-path","url(#clip)")
+            .attr("fill","none")
+            .attr("stroke-width",3)
+            .attr("clip-path","url(#clip)")
+            .attr("d",function(d) {d.line=this; return line(d.values); })
+            .style("stroke", function(d) { return color(d.name); })
+            .style("stroke-width", function(d) { if (d.name=="mean") {
+              return 6;}
+              else {return 3;}
+              });
+     if (variable2=="2-m T" || variable2=="850-hPa T") {
+     flin1=d3.selectAll("#gfli");
+     flin1[0][0].parentNode.appendChild(flin1[0][0]);
+     }
+        }
+       else {
+       dp.exit().remove();
+       dp.enter().append("path")
+            .attr("clip-path","url(#clip)")
+            .attr("fill","none")
+            .attr("stroke-width",3)
+            .attr("clip-path","url(#clip)")
+            .attr("d",function(d) {d.line=this; return line(d.values); })
+            .style("stroke", function(d) { return color(d.name); })
+            .style("stroke-width", function(d) { if (d.name=="mean") {
+              return 6;}
+              else {return 3;}
+              });
+      
+     var transition = dp.transition()
+          .duration(transitiontime)
+            .attr("clip-path","url(#clip)")
+            .attr("class","line")
+            .attr("d",function(d) { d.line=this; return toline()(d.values); })
+            .style("stroke", function(d) { return color(d.name); })
+            .style("stroke-width", function(d) { if (d.name=="mean") {
+              return 6;}
+              else {return 3;}
+              });
+     if (variable2=="2-m T" || variable2=="850-hPa T") {
+     flin1=d3.selectAll("#gfli");
+     flin1[0][0].parentNode.appendChild(flin1[0][0]);
+     }
+      }
+    var newname=linesvg.selectAll(".title").selectAll("text")
+        .text("EMC's GEFS plumes for: " +stationname);
+    var newtitle=linesvg.selectAll(".titlesub").selectAll("text")
+        .text(strdate);
+    var focus=d3.select(".focus");
+
+var thisdata=d3.nest()
+          .key(function(d) { return x(d.date) + "," + y(d.qpf); })
+          .rollup(function(v) {
+                  return v[0]; })
+          .entries(d3.merge(pertsvor.map(function(d) { return d.values; })))
+          .map(function(d) { return d.values; })
+        
+
+
+
+var voronoiGroup=linesvg.selectAll(".voronoi").selectAll("path")
+        .data(voronoi(thisdata),function(d) {return d;})
+    voronoiGroup.exit().remove();
+    voronoiGroup.enter().append("path")
+      .attr("d", function(d) {  return "M" + d.join("L") + "Z"; })
+      .datum(function(d) {  return d.point; })
+      .on("mouseover", mouseover)
+      .on("mouseout", mouseout);
+
+function mouseover(d) {
+   for (i=0; i<perts.length;i++) {
+       if (d.city==perts[i].name) {
+          var j=i;
+          var linef = d3.select(perts[j].line);
+     if (variable2=="P-type") {linef.style("stroke",color(d.city)).style("stroke-width",6);}
+     else {
+     linef.style("stroke", "#cc2c1b")
+              .style("stroke-width",6);}
+        }
+     }
+    linef[0][0].parentNode.appendChild(linef[0][0]);
+     if (variable2=="2-m T" || variable2=="850-hPa T") {
+     flin1=d3.selectAll("#gfli");
+     flin1[0][0].parentNode.appendChild(flin1[0][0]);
+     }
+   if (d.qpf<=ymaxkeep && d.qpf>=yminkeep) {
+    focus.attr("transform", "translate(" + x(d.date) + "," + y(d.qpf) + ")");
+           
+    focus.select("text").text(d.city+"   F"+d.time+"   "+Math.round(d.qpf*100)/100+" "+units).style("font-weight","bold");
+  }
+}
+
+  function mouseout(d) {
+   for (i=0; i<perts.length;i++) {
+       if (d.city==perts[i].name) {
+          var j=i;
+         }
+       if (perts[i].name=="mean") {
+          var k=i;
+         }
+      perts[i].line.parentNode.appendChild(perts[i].line);
+     if (variable2=="2-m T" || variable2=="850-hPa T") {
+       flin1=d3.selectAll("#gfli");
+       flin1[0][0].parentNode.appendChild(flin1[0][0]);
+       }
+     }
+     var linef=d3.select(perts[j].line);
+          linef.style("stroke", function(d) { return color(d.name); })
+    .style("stroke-width", function(d) { if (d.name=="mean") {
+      return 6;}
+      else {return 3;}
+      })
+     
+    focus.attr("transform", "translate(-100,-100)");
+  }
+
+
+
+//drawobs()
+  if (result!=0) {
+    drawobs(result);
+    //console.log(result);
+  }
+  else {
+  linesvg.selectAll(".dot").remove();
+  linesvg.selectAll(".pline").remove();
+  linesvg.selectAll(".focus2").remove();}
+});
+});
+}
+
+
+function drawobs(finobs) {
+linesvg.selectAll(".dot").remove();
+linesvg.selectAll(".focus2").remove();
+linesvg.selectAll(".pline").remove();
+if (variable2=="2-m T") {
+  tfin=[]
+  for (var k=0;k<finobs.length-1;++k) {
+    if (typeof finobs[k].temp !== "undefined"){
+      tfin.push({time:finobs[k].time,temp:finobs[k].temp});
+    }
+  }
+var obsplot=linesvg.selectAll(".dot")
+  .data(tfin);
+obsplot.enter().append("circle")
+    .attr("class","dot")
+    .attr("r",5)
+    .attr("cx",function(d) {return x(d.time); })
+    .attr("fill-opacity",0.0)
+    .attr("stroke-opacity",0.0)
+    .attr("stroke","black")
+    .attr("clip-path","url(#clip)")
+    .attr("stroke-width",.5)
+    //.style("fill","#ffa500")
+    .style("fill","#ffaf0f")
+    .attr("cy",function(d) {return y(d.temp); })
+linesvg.selectAll(".dot").transition()
+    .duration(750)
+    .attr("fill-opacity",1.0)
+    .attr("stroke-opacity",1.0);
+linesvg.selectAll(".dot")
+    .on("mouseover",function(d) {
+        d3.select(this).attr("stroke-width",2.5);
+        focust.attr("transform", "translate(" + x(d.time) + "," + y(d.temp) + ")");
+        //focust.select("text").text(d.temp+"F   "+d.time).style("font-weight","bold");
+        focust.selectAll(".ftext").text(Math.round(d.temp*100)/100+" F").style("font-weight","bold");
+      })
+    .on("mouseout",function(d) {
+        d3.select(this).attr("stroke-width",.5);
+        focust.attr("transform","translate(-100,-100)")
+      });
+    var focust = linesvg.append("g")
+      .attr("class","focus2")
+      .attr("transform","translate(-100,-100)");
+      //.attr("class","focus");
+    focust.append("text")
+      .attr("class","ftext")
+      .style("font-size","12px")
+      .style("fill","#000")
+      .attr("y",-10);
+}
+if (variable2=="SLP") {
+  slpfin=[]
+  for (var k=0;k<finobs.length-1;++k) {
+    if (typeof finobs[k].slp !== "undefined"){
+      slpfin.push({time:finobs[k].time,slp:finobs[k].slp});
+    }
+  }
+var obsplot=linesvg.selectAll(".dot")
+  .data(slpfin);
+obsplot.enter().append("circle")
+    .attr("class","dot")
+    .attr("r",5)
+    .attr("cx",function(d) {return x(d.time); })
+    .attr("fill-opacity",0.0)
+    .attr("stroke-opacity",0.0)
+    .attr("stroke","black")
+    .attr("clip-path","url(#clip)")
+    .attr("stroke-width",.5)
+    //.style("fill","#ffa500")
+    .style("fill","#f48134")
+    .attr("cy",function(d) {return y(d.slp); })
+linesvg.selectAll(".dot").transition()
+    .duration(750)
+    .attr("fill-opacity",1.0)
+    .attr("stroke-opacity",1.0);
+linesvg.selectAll(".dot")
+    .on("mouseover",function(d) {
+        d3.select(this).attr("stroke-width",2.5);
+        focust.attr("transform", "translate(" + x(d.time) + "," + y(d.slp) + ")");
+        //focust.select("text").text(d.slp+"hPa   "+d.time).style("font-weight","bold");
+        focust.selectAll(".ftext").text(Math.round(d.slp*100)/100+" hPa").style("font-weight","bold");
+      })
+    .on("mouseout",function(d) {
+        d3.select(this).attr("stroke-width",.5);
+        focust.attr("transform","translate(-100,-100)")
+      });
+    var focust = linesvg.append("g")
+      .attr("class","focus2")
+      .attr("transform","translate(-100,-100)");
+      //.attr("class","focus");
+    focust.append("text")
+      .attr("class","ftext")
+      .style("font-size","12px")
+      .style("fill","#000")
+      .attr("y",-10);
+}
+if (variable2=="2-m Td") {
+  tdfin=[]
+  for (var k=0;k<finobs.length-1;++k) {
+    if (typeof finobs[k].dew !== "undefined"){
+      tdfin.push({time:finobs[k].time,dew:finobs[k].dew});
+    }
+  }
+var obsplot=linesvg.selectAll(".dot")
+  .data(tdfin);
+obsplot.enter().append("circle")
+    .attr("class","dot")
+    .attr("r",5)
+    .attr("cx",function(d) {return x(d.time); })
+    .attr("stroke","black")
+    .attr("stroke-opacity",0.0)
+    .attr("fill-opacity",0.0)
+    .attr("clip-path","url(#clip)")
+    .attr("stroke-width",.5)
+    .style("fill","#52cc00")
+    .attr("cy",function(d) {return y(d.dew); })
+linesvg.selectAll(".dot").transition()
+    .duration(750)
+    .attr("fill-opacity",1.0)
+    .attr("stroke-opacity",1.0);
+linesvg.selectAll(".dot")
+    .on("mouseover",function(d) {
+        d3.select(this).attr("stroke-width",2.5);
+        focusd.attr("transform", "translate(" + x(d.time) + "," + y(d.dew) + ")");
+        focusd.selectAll(".fdtext").text(Math.round(d.dew*100)/100+" F").style("font-weight","bold");
+      })
+    .on("mouseout",function(d) {
+        d3.select(this).attr("stroke-width",.5);
+        focusd.attr("transform","translate(-100,-100)")
+      });
+    var focusd = linesvg.append("g")
+      .attr("class","focus2")
+      .attr("transform","translate(-100,-100)");
+    focusd.append("text")
+      .attr("class","fdtext")
+      .style("font-size","12px")
+      .style("fill","#000")
+      .attr("y",-10);
+}
+if (variable2=="10-m wind") {
+  wfin=[]
+  for (var k=0;k<finobs.length-1;++k) {
+    if (typeof finobs[k].wind !== "undefined"){
+      wfin.push({time:finobs[k].time,wind:finobs[k].wind});
+    }
+  }
+var obsplot=linesvg.selectAll(".dot")
+  .data(wfin);
+obsplot.enter().append("circle")
+    .attr("class","dot")
+    .attr("r",5)
+    .attr("cx",function(d) {return x(d.time); })
+    .attr("stroke","black")
+    .attr("stroke-opacity",0.0)
+    .attr("fill-opacity",0.0)
+    .attr("clip-path","url(#clip)")
+    .attr("stroke-width",.5)
+    .style("fill","#9c7aff")
+    .attr("cy",function(d) {return y(d.wind); })
+linesvg.selectAll(".dot").transition()
+    .duration(750)
+    .attr("fill-opacity",1.0)
+    .attr("stroke-opacity",1.0);
+linesvg.selectAll(".dot")
+    .on("mouseover",function(d) {
+        d3.select(this).attr("stroke-width",2.5);
+        focusd.attr("transform", "translate(" + x(d.time) + "," + y(d.wind) + ")");
+        focusd.selectAll(".fdtext").text(Math.round(d.wind*100)/100+" kt").style("font-weight","bold");
+      })
+    .on("mouseout",function(d) {
+        d3.select(this).attr("stroke-width",.5);
+        focusd.attr("transform","translate(-100,-100)")
+      });
+    var focusd = linesvg.append("g")
+      .attr("class","focus2")
+      .attr("transform","translate(-100,-100)");
+    focusd.append("text")
+      .attr("class","fdtext")
+      .style("font-size","12px")
+      .style("fill","#000")
+      .attr("y",-10);
+}
+if (variable2=="QPF" || variable2=="3-h QPF") {
+var forline=[{values:finobs}];
+linesvg.selectAll(".pline")
+     .data(forline)
+   .enter().append("path")
+    .attr("stroke-width",3)
+    .attr("stroke-opacity",0.0)
+    .attr("fill","none")
+    .attr("clip-path","url(#clip)")
+    .attr("d",function(d) {d.line=this; return topline()(d.values); })
+    .attr("class","pline")
+  //.data(finobs)
+    .style("stroke", "#da75ff");
+  //.attr("d",function(d) { d.line=this; return topline()(d.values); });
+  //.attr("d",topline(finobs));
+var obsplot=linesvg.selectAll(".dot")
+  .data(finobs);
+obsplot.enter().append("circle")
+    .attr("class","dot")
+    .attr("r",5)
+    .attr("cx",function(d) {return x(d.time); })
+    .attr("stroke","black")
+    .attr("stroke-opacity",0.0)
+    .attr("fill-opacity",0.0)
+    .attr("clip-path","url(#clip)")
+    .attr("stroke-width",.5)
+    .style("fill","#da75ff")
+    .attr("cy",function(d) {return y(d.precip); })
+linesvg.selectAll(".pline").transition()
+    .duration(750)
+    //.attr("fill-opacity",1.0)
+    .attr("stroke-opacity",1.0);
+linesvg.selectAll(".dot").transition()
+    .duration(750)
+    .attr("fill-opacity",1.0)
+    .attr("stroke-opacity",1.0);
+linesvg.selectAll(".dot")
+    .on("mouseover",function(d) {
+        d3.select(this).attr("stroke-width",2.5);
+        focusd.attr("transform", "translate(" + x(d.time) + "," + y(d.precip) + ")");
+        focusd.selectAll(".fdtext").text(d.precip+" in").style("font-weight","bold");
+      })
+    .on("mouseout",function(d) {
+        d3.select(this).attr("stroke-width",.5);
+        focusd.attr("transform","translate(-100,-100)")
+      });
+    var focusd = linesvg.append("g")
+      .attr("class","focus2")
+      .attr("transform","translate(-100,-100)");
+    focusd.append("text")
+      .attr("class","fdtext")
+      .style("font-size","12px")
+      .style("fill","#000")
+      .attr("y",-10);
+}
+
+}
+//}
+
+
+</script>
+</body>
