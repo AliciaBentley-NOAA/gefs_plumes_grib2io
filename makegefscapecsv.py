@@ -61,18 +61,15 @@ for i in range(len(members)):
       grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2bp5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2b.0p50.f'+str(fhours1[j]).zfill(3), mode='r') 
       #grib message order changes from f00 to f03 to f06
       if j==0:
-        #precip=grbind.select(name='Convective available potential energy',level=0)[0].values
-        #precip=grbs[297][0].data()
+        #precip=grbs[271][0].data()
         precip=grbs.select(shortName='CAPE',level='surface')[0].data()
         precip=np.asarray(precip[::-1,:])
       elif j==1:
-        #precip=grbind.select(name='Convective available potential energy',level=0)[0].values
-        #precip=grbs[308][0].data()
+        #precip=grbs[282][0].data()
         precip=grbs.select(shortName='CAPE',level='surface')[0].data()
         precip=np.asarray(precip[::-1,:])
       else:
-        #precip=grbind.select(name='Convective available potential energy',level=0)[0].values
-        #precip=grbs[308][0].data()
+        #precip=grbs[282][0].data()
         precip=grbs.select(shortName='CAPE',level='surface')[0].data()
         precip=np.asarray(precip[::-1,:])
       lats,lons = grbs[31][0].latlons()

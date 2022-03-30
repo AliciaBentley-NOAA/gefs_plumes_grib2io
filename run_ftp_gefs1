@@ -1,18 +1,15 @@
-#! /bin/ksh
-#
-#BSUB -J wafs.ftp
-#BSUB -oo /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/gefsftp1.out
-#BSUB -eo /gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/gefsftp1.out
-#BSUB -n 1
-#BSUB -W 00:10
-#BSUB -P GEN-T2O
-#BSUB -R "affinity[core]"
-#BSUB -q dev_transfer
-#BSUB -R "rusage[mem=300]"
+#!/bin/bash
+#PBS -N gefs.ftp
+#PBS -o /lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefsftp1.out
+#PBS -e /lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefsftp1.err
+#PBS -l select=1:ncpus=4:mem=1GB
+#PBS -q dev_transfer
+#PBS -l walltime=00:10:00
+#PBS -A VERF-DEV
 
 set -x
 
-cd /gpfs/dell1/stmp/Alicia.Bentley/grib2io_test
+cd /lfs/h2/emc/stmp/Alicia.Bentley/gefsv12
 
 cyc=`cut -c 9-10 holddate.txt`
 day=`cut -c 7-8 holddate.txt`

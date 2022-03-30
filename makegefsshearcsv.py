@@ -65,10 +65,10 @@ for i in range(len(members)):
         #vwind=grbs[67][0].data()*1.94
         #uwind500=grbs[34][0].data()*1.94
         #vwind500=grbs[35][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='10m')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='10m')[0].data()*1.94
-        uwind500=grbs.select(shortName='UGRD',level='500hpa')[0].data()*1.94
-        vwind500=grbs.select(shortName='VGRD',level='500hpa')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data()*1.94
+        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data()*1.94
+        uwind500=grbs.select(shortName='UGRD',level='500 mb')[0].data()*1.94
+        vwind500=grbs.select(shortName='VGRD',level='500 mb')[0].data()*1.94
         precip=((uwind500-uwind)**2+(vwind500-vwind)**2)**.5
         precip=np.asarray(precip[::-1,:])
       elif j==1:
@@ -76,10 +76,10 @@ for i in range(len(members)):
         #vwind=grbs[68][0].data()*1.94
         #uwind500=grbs[34][0].data()*1.94
         #vwind500=grbs[35][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='10m')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='10m')[0].data()*1.94
-        uwind500=grbs.select(shortName='UGRD',level='500hpa')[0].data()*1.94
-        vwind500=grbs.select(shortName='VGRD',level='500hpa')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data()*1.94
+        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data()*1.94
+        uwind500=grbs.select(shortName='UGRD',level='500 mb')[0].data()*1.94
+        vwind500=grbs.select(shortName='VGRD',level='500 mb')[0].data()*1.94
         precip=((uwind500-uwind)**2+(vwind500-vwind)**2)**.5
         precip=np.asarray(precip[::-1,:])
       else:
@@ -87,10 +87,10 @@ for i in range(len(members)):
         #vwind=grbs[68][0].data()*1.94
         #uwind500=grbs[34][0].data()*1.94
         #vwind500=grbs[35][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='10m')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='10m')[0].data()*1.94
-        uwind500=grbs.select(shortName='UGRD',level='500hpa')[0].data()*1.94
-        vwind500=grbs.select(shortName='VGRD',level='500hpa')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data()*1.94
+        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data()*1.94
+        uwind500=grbs.select(shortName='UGRD',level='500 mb')[0].data()*1.94
+        vwind500=grbs.select(shortName='VGRD',level='500 mb')[0].data()*1.94
         precip=((uwind500-uwind)**2+(vwind500-vwind)**2)**.5
         precip=np.asarray(precip[::-1,:])
       lats,lons = grbs[31][0].latlons()
@@ -113,10 +113,10 @@ for i in range(len(members)):
         #vwind=grbs[586][0].data()*1.94
         #uwind500=grbs[356][0].data()*1.94
         #vwind500=grbs[357][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='10m')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='10m')[0].data()*1.94
-        uwind500=grbs.select(shortName='UGRD',level='500hpa')[0].data()*1.94
-        vwind500=grbs.select(shortName='VGRD',level='500hpa')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data()*1.94
+        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data()*1.94
+        uwind500=grbs.select(shortName='UGRD',level='500 mb')[0].data()*1.94
+        vwind500=grbs.select(shortName='VGRD',level='500 mb')[0].data()*1.94
         precip=((uwind500-uwind)**2+(vwind500-vwind)**2)**.5
         precip=np.asarray(precip[::-1,:])
       elif j==1:
@@ -124,10 +124,10 @@ for i in range(len(members)):
         #vwind=grbs[589][0].data()*1.94
         #uwind500=grbs[356][0].data()*1.94
         #vwind500=grbs[357][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='10m')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='10m')[0].data()*1.94
-        uwind500=grbs.select(shortName='UGRD',level='500hpa')[0].data()*1.94
-        vwind500=grbs.select(shortName='VGRD',level='500hpa')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data()*1.94
+        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data()*1.94
+        uwind500=grbs.select(shortName='UGRD',level='500 mb')[0].data()*1.94
+        vwind500=grbs.select(shortName='VGRD',level='500 mb')[0].data()*1.94
         precip=((uwind500-uwind)**2+(vwind500-vwind)**2)**.5
         precip=np.asarray(precip[::-1,:])
       else:
@@ -135,10 +135,10 @@ for i in range(len(members)):
         #vwind=grbs[589][0].data()*1.94
         #uwind500=grbs[356][0].data()*1.94
         #vwind500=grbs[357][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='10m')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='10m')[0].data()*1.94
-        uwind500=grbs.select(shortName='UGRD',level='500hpa')[0].data()*1.94
-        vwind500=grbs.select(shortName='VGRD',level='500hpa')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data()*1.94
+        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data()*1.94
+        uwind500=grbs.select(shortName='UGRD',level='500 mb')[0].data()*1.94
+        vwind500=grbs.select(shortName='VGRD',level='500 mb')[0].data()*1.94
         precip=((uwind500-uwind)**2+(vwind500-vwind)**2)**.5
         precip=np.asarray(precip[::-1,:])
       lats,lons = grbs[31][0].latlons()

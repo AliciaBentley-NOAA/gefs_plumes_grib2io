@@ -58,22 +58,22 @@ for i in range(len(members)):
       if j==0:
         #uwind=grbs[45][0].data()*1.94
         #vwind=grbs[46][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='850hpa')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='850hpa')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='850 mb')[0].data()*1.94
+        vwind=grbs.select(shortName='VGRD',level='850 mb')[0].data()*1.94
         precip=(uwind**2+vwind**2)**.5
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #uwind=grbs[45][0].data()*1.94
         #vwind=grbs[46][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='850hpa')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='850hpa')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='850 mb')[0].data()*1.94
+        vwind=grbs.select(shortName='VGRD',level='850 mb')[0].data()*1.94
         precip=(uwind**2+vwind**2)**.5
         precip=np.asarray(precip[::-1,:])
       else:
         #uwind=grbs[45][0].data()*1.94
         #vwind=grbs[46][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='850hpa')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='850hpa')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='850 mb')[0].data()*1.94
+        vwind=grbs.select(shortName='VGRD',level='850 mb')[0].data()*1.94
         precip=(uwind**2+vwind**2)**.5
         precip=np.asarray(precip[::-1,:])
       lats,lons = grbs[31][0].latlons()
@@ -94,22 +94,22 @@ for i in range(len(members)):
       if j==0:
         #uwind=grbs[468][0].data()*1.94
         #vwind=grbs[469][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='850hpa')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='850hpa')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='850 mb')[0].data()*1.94
+        vwind=grbs.select(shortName='VGRD',level='850 mb')[0].data()*1.94
         precip=(uwind**2+vwind**2)**.5
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #uwind=grbs[468][0].data()*1.94
         #vwind=grbs[469][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='850hpa')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='850hpa')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='850 mb')[0].data()*1.94
+        vwind=grbs.select(shortName='VGRD',level='850 mb')[0].data()*1.94
         precip=(uwind**2+vwind**2)**.5
         precip=np.asarray(precip[::-1,:])
       else:
         #uwind=grbs[468][0].data()*1.94
         #vwind=grbs[469][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='850hpa')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='850hpa')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='850 mb')[0].data()*1.94
+        vwind=grbs.select(shortName='VGRD',level='850 mb')[0].data()*1.94
         precip=(uwind**2+vwind**2)**.5
         precip=np.asarray(precip[::-1,:])
       lats,lons = grbs[31][0].latlons()

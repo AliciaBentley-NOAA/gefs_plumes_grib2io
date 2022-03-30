@@ -59,10 +59,19 @@ for i in range(len(members)):
       nmbtotal[:,j,i]=date_list[j].strftime("%m-%d-%Y:%H")
     elif i>1 and members[i]!='GFS':
       grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2bp5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2b.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
-      #precip=(grbind.select(name='MSLP (Eta model reduction)')[0].values/100.)
-      #precip=grbs[271][0].data()/100.
-      precip=grbs.select(shortName='MSLET')[0].data()/100.
-      precip=np.asarray(precip[::-1,:])
+      #grib message order changes from f00 to f03 to f06
+      if j==0:
+        #precip=grbs[245][0].data()/100.
+        precip=grbs.select(shortName='MSLET')[0].data()/100.
+        precip=np.asarray(precip[::-1,:])
+      elif j==1:
+        #precip=grbs[245][0].data()/100.
+        precip=grbs.select(shortName='MSLET')[0].data()/100.
+        precip=np.asarray(precip[::-1,:])
+      else:
+        #precip=grbs[245][0].data()/100.
+        precip=grbs.select(shortName='MSLET')[0].data()/100.
+        precip=np.asarray(precip[::-1,:])
       lats,lons = grbs[31][0].latlons()
       latlist=lats[::-1,0]
       lonlist=lons[0,:]
@@ -78,10 +87,18 @@ for i in range(len(members)):
     #get GFS data
     else:
       grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.2/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
-      #precip=(grbind.select(name='MSLP (Eta model reduction)')[0].values/100.)
-      #precip=grbs[557][0].data()/100.
-      precip=grbs.select(shortName='MSLET')[0].data()/100.
-      precip=np.asarray(precip[::-1,:])
+      if j==0:
+        #precip=grbs[557][0].data()/100.
+        precip=grbs.select(shortName='MSLET')[0].data()/100.
+        precip=np.asarray(precip[::-1,:])
+      elif j==1:
+        #precip=grbs[557][0].data()/100.
+        precip=grbs.select(shortName='MSLET')[0].data()/100.
+        precip=np.asarray(precip[::-1,:])
+      else:
+        #precip=grbs[557][0].data()/100.
+        precip=grbs.select(shortName='MSLET')[0].data()/100.
+        precip=np.asarray(precip[::-1,:])
       lats,lons = grbs[31][0].latlons()
       latlist=lats[::-1,0]
       lonlist=lons[0,:]

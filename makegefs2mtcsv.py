@@ -62,15 +62,15 @@ for i in range(len(members)):
       #grib message order changes from f00 to f03 to f06
       if j==0:
         #precip=(grbs[64][0].data()-273.15)*1.8 + 32
-        precip=(grbs.select(shortName='TMP',level='2m')[0].data()-273.15)*1.8 + 32
+        precip=(grbs.select(shortName='TMP',level='2 m above ground')[0].data()-273.15)*1.8 + 32
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #precip=(grbs[63][0].data()-273.15)*1.8 + 32
-        precip=(grbs.select(shortName='TMP',level='2m')[0].data()-273.15)*1.8 + 32
+        precip=(grbs.select(shortName='TMP',level='2 m above ground')[0].data()-273.15)*1.8 + 32
         precip=np.asarray(precip[::-1,:])
       else:
         #precip=(grbs[63][0].data()-273.15)*1.8 + 32
-        precip=(grbs.select(shortName='TMP',level='2m')[0].data()-273.15)*1.8 + 32
+        precip=(grbs.select(shortName='TMP',level='2 m above ground')[0].data()-273.15)*1.8 + 32
         precip=np.asarray(precip[::-1,:])
       lats,lons = grbs[31][0].latlons()
       latlist=lats[::-1,0]
@@ -89,15 +89,15 @@ for i in range(len(members)):
       grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.2/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
       if j==0:
         #precip=(grbs[580][0].data()-273.15)*1.8 + 32
-        precip=(grbs.select(shortName='TMP',level='2m')[0].data()-273.15)*1.8 + 32
+        precip=(grbs.select(shortName='TMP',level='2 m above ground')[0].data()-273.15)*1.8 + 32
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #precip=(grbs[581][0].data()-273.15)*1.8 + 32
-        precip=(grbs.select(shortName='TMP',level='2m')[0].data()-273.15)*1.8 + 32
+        precip=(grbs.select(shortName='TMP',level='2 m above ground')[0].data()-273.15)*1.8 + 32
         precip=np.asarray(precip[::-1,:])
       else:
         #precip=(grbs[581][0].data()-273.15)*1.8 + 32
-        precip=(grbs.select(shortName='TMP',level='2m')[0].data()-273.15)*1.8 + 32
+        precip=(grbs.select(shortName='TMP',level='2 m above ground')[0].data()-273.15)*1.8 + 32
         precip=np.asarray(precip[::-1,:])
       lats,lons = grbs[31][0].latlons()
       latlist=lats[::-1,0]

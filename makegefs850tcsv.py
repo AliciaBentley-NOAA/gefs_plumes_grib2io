@@ -62,15 +62,15 @@ for i in range(len(members)):
       #grib message order changes from f00 to f03 to f06
       if j==0:
         #precip=grbs[42][0].data()-273.15
-        precip=grbs.select(shortName='TMP',level='850hpa')[0].data()-273.15
+        precip=grbs.select(shortName='TMP',level='850 mb')[0].data()-273.15
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #precip=grbs[42][0].data()-273.15
-        precip=grbs.select(shortName='TMP',level='850hpa')[0].data()-273.15
+        precip=grbs.select(shortName='TMP',level='850 mb')[0].data()-273.15
         precip=np.asarray(precip[::-1,:])
       else:
         #precip=grbs[42][0].data()-273.15
-        precip=grbs.select(shortName='TMP',level='850hpa')[0].data()-273.15
+        precip=grbs.select(shortName='TMP',level='850 mb')[0].data()-273.15
         precip=np.asarray(precip[::-1,:])
       lats,lons = grbs[31][0].latlons()
       latlist=lats[::-1,0]
@@ -89,15 +89,15 @@ for i in range(len(members)):
       grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.2/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
       if j==0:
         #precip=grbs[462][0].data()-273.15
-        precip=grbs.select(shortName='TMP',level='850hpa')[0].data()-273.15
+        precip=grbs.select(shortName='TMP',level='850 mb')[0].data()-273.15
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #precip=grbs[462][0].data()-273.15
-        precip=grbs.select(shortName='TMP',level='850hpa')[0].data()-273.15
+        precip=grbs.select(shortName='TMP',level='850 mb')[0].data()-273.15
         precip=np.asarray(precip[::-1,:])
       else:
         #precip=grbs[462][0].data()-273.15
-        precip=grbs.select(shortName='TMP',level='850hpa')[0].data()-273.15
+        precip=grbs.select(shortName='TMP',level='850 mb')[0].data()-273.15
         precip=np.asarray(precip[::-1,:])
       lats,lons = grbs[31][0].latlons()
       latlist=lats[::-1,0]

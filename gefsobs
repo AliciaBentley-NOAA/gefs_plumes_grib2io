@@ -1,15 +1,25 @@
 #!/bin/sh -l
 echo 'into'
 #Script to create text files of surface obs at various stations
-module load gnu/4.8.5
-module load ips/18.0.1.163
-module load ips/18.0.5.274
-module load metplus/2.1
-module load gempak/7.3.3
+source /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/versions/run.ver
+module purge
+module load envvar/${envvar_ver}
+module load intel/${intel_ver}
+module load PrgEnv-intel/${PrgEnvintel_ver}
+module load craype/${craype_ver}
+module load cray-mpich/${craympich_ver}
+module load cray-pals/${craypals_ver}
+module load prod_util/${prod_util_ver}
+module load prod_envir/${prod_envir_ver}
+module load libjpeg/${libjpeg_ver}
+module load grib_util/${grib_util_ver}
+module load wgrib2/${wgrib2_ver}
+module load cfp/${cfp_ver}
+module load gempak/${gempak_ver}
 
 
-mkdir -p /gpfs/dell1/stmp/Alicia.Bentley/obsgefsv12
-cd /gpfs/dell1/stmp/Alicia.Bentley/obsgefsv12
+mkdir -p /lfs/h2/emc/stmp/Alicia.Bentley/obsgefsv12
+cd /lfs/h2/emc/stmp/Alicia.Bentley/obsgefsv12
 rm -rf *txt
 
 #date +%Y%m%d12 > holddate.txt
@@ -64,16 +74,15 @@ if [[ $porp -eq "venus" ]]
 then
 for s in $stations; do
 for h in $hours; do
-/gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/advtime $ymdh 0 -1 1 0 > currentday.txt
+/lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/advtime $ymdh 0 -1 1 0 > currentday.txt
 ymdcurrent=`cut -c 1-8 currentday.txt`
-fmdl1=/gpfs/dell1/nco/ops/dcom/prod/ldmdata/gempak/hrly/${ymd}.hrly
-#fmdl1=/stmpp1/Corey.Guastini/metdata/${ymdcurrent}_sao.gem
+fmdl1=/lfs/h1/ops/prod/dcom/ldmdata/gempak/hrly/${ymd}.hrly
 ((k=k+1))
 
     sflist << EOF
 SFFILE = $fmdl1
 AREA   = @${s}
-DATTIM = `/gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/advtime $ymdh 0 -1 0`-`/gpfs/dell2/emc/verification/save/Alicia.Bentley/gefsv12/advtime $ymdh $h -1 0`
+DATTIM = `/lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/advtime $ymdh 0 -1 0`-`/lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/advtime $ymdh $h -1 0`
 SFPARM = tmpc;dwpc;sknt;drct;tclo;pmsl;P01I
 OUTPUT = f/pancobs${h}.txt
 IDNTYP = STID
@@ -90,12 +99,9 @@ cat pancobs${h}.txt >> pancobs.txt
 
 done
 sed '/^\s*$/d' pancobs.txt | sed '/STN/d' | sed '/PARM/d' | sed '/P01I/d'  > rtmp.txt && mv rtmp.txt pancobs.txt
-#mv pancobs.txt /global/save/Tracey.Dorian/meteograms/${s}_${ymdcurrent}obs.txt
 mv pancobs.txt ${s}_${ymd}obs.txt
-#mv pancobs.txt /global/save/Tracey.Dorian/meteograms/744550_${ymdcurrent}obs.txt
 rm -rf *pancobs*txt
 done
-scp *${ymd}*.txt abentley@emcrzdm:/home/www/emc/htdocs/users/meg/gefs_plumes/
-#scp *${ymd}*.txt tdorian@emcrzdm:/home/www/emc/htdocs/gc_wmb/tdorian/fv3plumes/
+scp *${ymd}*.txt abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test/
 fi
 exit

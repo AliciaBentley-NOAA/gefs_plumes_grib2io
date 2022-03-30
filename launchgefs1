@@ -37,12 +37,15 @@ ymdh=${year}${month}${day}${hour}
 ymdhdow=${year}${month}${day}${hour}${dow}
 
 
-python /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/makegefs850windcsv.py $ymdh > out_850wind_python.txt &
-python /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/makegefsthickcsv.py $ymdh > out_thick_python.txt &
-python /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/makegefs10mwindcsv.py $ymdh > out_10mwind_python.txt &
-python /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/makegefspwcsv.py $ymdh > out_pw_python.txt &
+python /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/makegefs2mtcsv.py $ymdh > out_2mt_python.txt &
+python /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/makegefs2mdewcsv.py $ymdh > out_2mdew_python.txt &
+python /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/makegefscapecsv.py $ymdh > out_cape_python.txt &
+python /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/makegefsslpcsv.py $ymdh > out_slp_python.txt &
 wait
 
+
+cp /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/edit_gefs.ksh .
+./edit_gefs.ksh
 
 exit
 
