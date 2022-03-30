@@ -1,7 +1,7 @@
 # gefs_plumes_grib2io
 Scripts used to create/populate the EMC GEFS plumes webpage on WCOSS2 (static 2022 version). 
 
-The largest difference from the static 2021 version of the GEFS plumes scripts (https://github.com/AliciaBentley-NOAA/gefs_plumes) is that the python scripts in this repository use grib2io instead of pygrib to read in GEFS/GFS grib2 files (https://github.com/AliciaBentley-NOAA/gefs_plumes_grib2io). Scripts have also been streamlined and commented in the static 2022 version.
+The largest difference from the static 2021 version of the GEFS plumes scripts (https://github.com/AliciaBentley-NOAA/gefs_plumes) is that the python scripts in this repository use grib2io instead of pygrib to read in GEFS/GFS grib2 files (gefs_plumes_grib2io). Scripts have also been streamlined and commented in the static 2022 version.
 
 /----------------
 
