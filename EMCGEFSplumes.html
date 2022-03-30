@@ -3,10 +3,6 @@
 <meta charset="utf-8">
 <title>EMC GEFS plumes</title>
 
-<p style="color:black;background-color:LightPink;text-align:center;font-size:1.2em;margin-top:-2px;margin-left:27px;margin-right:152px" ><b>Notice:</b> The <a style="color:blue;" href="https://wsup.mdl.nws.noaa.gov/ptvis/?version=raw&dataset=gefs">new MDL GEFS plumes webpage</a> upgrades and replaces this webpage and is currently accessible to those with NOAA login credentials. EMC has provided the code to replicate this webpage <a style="color:blue;" href="https://github.com/AliciaBentley-NOAA/gefs_plumes">on GitHub</a>. The GitHub code is provided as-is with no expectation of support.</p>
-<p style="color:black;background-color:LightSkyBlue;text-align:center;font-size:1.0em;margin-top:-12px;margin-left:27px;margin-right:152px" ><b>Disclaimer:</b> The content provided on this page supports model development. These are not official NWS products and should not to be relied upon for operational purposes.<br>This web site is not subject to 24/7 support, and thus may be unavailable during system outages.</p>
-
-<!--<link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />-->
 <style>
 
 body {
@@ -17,7 +13,6 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-  //shape-rendering: crispEdges;
 }
 .feature {
   fill: none;
@@ -43,7 +38,6 @@ body {
 }
 .land {
   fill: #D3D3D3;
-  //fill: none;
   }
 svg { overflow: hidden; }
 .voronoi path {
@@ -126,31 +120,6 @@ input:focus {
   outline:none;
 }
 
-/*  #ymin {
-  position: absolute;
-  left:135px;
-  top:630px;
-}
-
-#ymax {
-  position: absolute;
-  left:285px;
-  top:630px;
-}
-#sub {
-  position: absolute;
-  left: 450px;
-  top:630px;
-  background: none;
-}
-#clear {
-  position: absolute;
-  left: 585px;
-  top:630px;
-  background: none;
-}
-*/
-
 #sub:hover,
 #sub:focus {
   outline: none;
@@ -188,7 +157,7 @@ button {
 }
 </style>
 <link rel="stylesheet" type="text/css" href="leaflet.css">
-<link rel="stylesheet" type="text/css" href="rtma_v2.css">
+<link rel="stylesheet" type="text/css" href="rtma.css">
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script src="https://d3js.org/d3-queue.v3.min.js"></script>
 <script src="https://npmcdn.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
@@ -196,22 +165,21 @@ button {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/1.4/rgbcolor.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stackblur-canvas/1.4.1/stackblur.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvg/dist/browser/canvg.min.js"></script>
-<script type="text/javascript" src="downloadSVGByClass_v2.js"></script>
+<script type="text/javascript" src="downloadSVGByClass.js"></script>
 <script type="text/javascript" src="stationname.js"></script>
-<!-- <script src="https://cdn.jsdelivr.net/npm/save-svg-as-png@1.4.11/lib/saveSvgAsPng.min.js"></script>--> 
 </head>
 
 <body>
-<input type="button" value="Download Plot"  id="download" class="pn" style="position: absolute; top: 70px;left:780px;z-index:100"></input>
-<div id="text1" style="position: absolute; top: 735px;left:25px;padding-top:5px;z-index:3">
+<input type="button" value="Download Plot"  id="download" class="pn"></input>
+<div id="text1" style="position: absolute; top: 720px;left:25px;padding-top:5px;z-index:3">
   <p> 
     <span><b>About the plumes:</b> Data for each station is interpolated from a 0.5-degree grid for both the GEFS (gray lines for control and perturbed members; black for mean) and GFS (blue line), though the native resolution of the GFS is ~13 km vs ~33 km in the GEFS. The precipitation-type plot uses the closest gridpoint to each station as opposed to interpolation and does not contain a trace for the GFS. In the 3-h accumulation plots, F00 values are derived from the previous cycle's forecast. All observed data are derived from hourly station reports. Zoom for more CONUS stations.<br><br>This site is not operational; therefore, data will be missing occasionally. The contact for this site is: alicia.bentley@noaa.gov 
   </span>
 </p>
 </div>
-<div id="main" style="position:absolute; top: 73px; left: 8px"></div>
-<div id="map" style="position:absolute; top: 215px; left: 835px; height: 345px; width: 445px"></div>
-<div id="brush" style="position:absolute; top: 120px; left: 800px;"></div>
+<div id="main" style="position:absolute;"></div>
+<div id="map" style="position:absolute; top: 205px; left: 835px; height: 345px; width: 445px"></div>
+<div id="brush" style="position:absolute; top: 100px; left: 800px;"></div>
 <div id="menu" style="position:absolute; top:575px; left:895px;"><b>Variable:  </b><select></select></div>
 <div id="menucycle" style="position:absolute; top:575px; left:1075px;"><b>Cycle:  </b><select></select></div>
 <form name="myform" onSubmit="return handleClick()">
@@ -241,7 +209,7 @@ button {
   </p>
 </div>
 <script>
-//Written by C. Guastini using D3 Javascript library created by Mike Bostock
+//Written by C. Guastini using D3 Javascript library created by Mike Bostock, updated by A. Bentley
 var fclicked;
 
 //function that moves line to front on mouseover
@@ -254,9 +222,6 @@ d3.selection.prototype.moveToFront = function() {
 d3.select("#download")
 .on('click', function(){
     // Get the d3js SVG element and save using saveSvgAsPng.js
-   //var downloadFilename = stationname+"_"+filedate+".png";
-   //saveSvgAsPng(document.getElementsByTagName("svg")[0], downloadFilename, { backgroundColor: "#FFFFFF"});
-
      d3.select("body").append("canvas")
     .attr("id","canvas");
 
@@ -279,7 +244,6 @@ else
 	  a.dispatchEvent(event)
 }
 d3.select("canvas").remove()
-//don't think I even need this becasue dataView is never even defined so what does it do
 function binaryblob(){
 	var byteString = atob(document.querySelector("canvas").toDataURL().replace(/^data:image\/(png|jpg);base64,/, "")); 
 	var ab = new ArrayBuffer(byteString.length);
@@ -329,9 +293,9 @@ var monthNames = [
   "August", "September", "October",
   "November", "December"
 ];
-var currentdate=new Date(Date.UTC(2022,1,17,6,0,0));
-var subdate=new Date(Date.UTC(2022,1,17,6,0,0));
-var obsdate=new Date(Date.UTC(2022,1,16,23,0,0));
+var currentdate=new Date(Date.UTC(2022,2,30,6,0,0));
+var subdate=new Date(Date.UTC(2022,2,30,6,0,0));
+var obsdate=new Date(Date.UTC(2022,2,29,23,0,0));
 var sday=currentdate.getUTCDate();
 var smonthindex=currentdate.getUTCMonth();
 var syear=currentdate.getUTCFullYear();
@@ -358,7 +322,7 @@ var hilats=[68.13,67.11,66.57,60.13,13.57,-14.33,18.43,34.73, 33.43, 33.93, 37.6
 var hilons=[-151.74,-157.86,-145.27,-149.42,144.92,-170.72,-66.0,-92.23, -112.02, -118.38, -122.37, -104.65, -81.68, -80.28, -84.45, -116.23, -87.93, -99.97, -90.25, -71.02, -68.02, -84.37, -93.23, -94.73, -90.37, -111.38, -77.9, -100.75, -106.62, -117.08, -78.73, -122.87, -97.02, -97.42, -101.82, -111.97, -77.45, -122.32, -83.33, -93.4, -75.62, -96.82, -100.55, -73.88, -123.22, -80.03, -117.53, -106.97, -110.95, -111.67, -119.72, -121.85, -121.5, -117.18, -108.52, -81.75, -81.33, -93.67, -86.3, -70.07, -92.2, -106.62, -111.08, -78.78, -97.18, -95.9, -115.17, -119.77, -97.6, -122.62, -118.83, -80.27, -103.05, -96.75, -89.98, -86.68, -97.5, -100.92, -106.38, -95.37, -124.55, -108.47, -86.78, -88.25, -94.37, -111.45, -114.58, -117.87, -116.5, -122.3, -120.58, -104.5, -84.35, -82.53, -83.65, -90.58, -96.38, -112.57, -85.18, -101.7, -97.43, -85.67, -88.77, -93.22, -93.83, -68.82, -70.3, -84.68, -85.52, -95.4, -90.08, -109.77, -114.1, -76.88, -79.95, -100.67, -115.78, -114.85, -117.8, -73.8, -76.1, -81.85, -83.8, -95.88, -121.17, -75.23, -77.83, -81.12, -82.22, -98.42, -100.28, -101.72, -97.68, -100.28, -99.47, -79.97, -76.2, -73.15, -120.53, -88.13, -87.9, -82.55, -104.8, -109.02, -86.78, -112.15, -110.72, -117.67, -103.22, -106.87, -107.52, -107.77, -104.62, -102.68, -103.67, -72.65, -82.28, -80.65, -80.42, -83.33, -81.97, -81.2, -91.72, -90.7, -92.4, -116.82, -88.85, -89.68, -89.1, -87.52, -87.42, -86.93, -86.32, -100.72, -99.27, -100.97, -96.68, -86.42, -84.6, -91.15, -93.2, -75.5, -69.8, -83.57, -83.75, -84.58, -86.23, -87.57, -94.13, -95.07, -92.22, -94.92, -90.08, -88.77, -111.17, -112.37, -111.98, -105.88, -82.53, -80.95, -78.88, -74.57, -103.32, -106.08, -104.5, -73.88, -75.38, -82.88, -84.22, -97.02, -97.92, -123.88, -80.18, -82.4, -85.2, -83.98, -99.68, -96.37, -94.72, -95.4, -98.5, -113.1, -114.02, -77.32, -72.57, -123.93, -91.47, -89.35, -79.85, -77.98, -150.02, -131.57, -156.8, -161.85, -162.72, -174.12, -147.88, -156.65, -152.5, -162.58, -155.62, -165.43, -170.22, -139.67, -155.05, -159.33, -157.18, -83.32, -93.38, -102.2, -100.5, -151.52, -166.13, -162.07, -166.03, -145.5, -148.47, -145.73, -158.52, -156.93, -145.45, -135.52, -151.5, -154.92, -153.7, -141.93, -132.97, -135.35, -150.1, -152.1, -167.92, -160.8, -166.53, -85.72, -92.82, -90.65, -93.98, -109.58, -109.63, -110.0, -124.1, -119.05, -116.62, -118.35, -114.72, -115.67, -120.95, -114.62, -120.63, -122.82, -105.87, -86.52, -81.75, -85.57, -84.2, -82.5, -84.95, -83.27, -156.05, -91.13, -94.17, -92.45, -95.22, -113.77, -114.28, -117.02, -116.1, -113.87, -95.48, -92.03, -67.02, -95.08, -92.5, -95.33, -92.55, -90.32, -93.53, -88.57, -89.32, -108.55, -112.55, -104.78, -114.25, -109.47, -102.8, -98.67, -101.33, -103.63, -103.1, -98.32, -100.58, -98.67, -103.58, -71.5, -108.8, -104.25, -107.72, -103.22, -107.27, -118.57, -75.72, -74.85, -83.67, -99.77, -99.05, -95.78, -117.82, -118.95, -120.4, -124.25, -121.15, -117.87, -75.72, -78.63, -78.83, -76.77, -79.73, -98.23, -100.42, -97.15, -85.08, -89.4, -102.55, -102.92, -99.77, -94.75, -104.02, -96.25, -97.23, -111.85, -109.52, -78.45, -122.53, -119.52, -91.45, -91.25, -89.67, -81.12, -81.42, -110.1, -106.47, -105.55, -110.73, -107.2, -109.07, -107.95,-89.33,-81.65,-72.28,-73.1,-89.82,-106.47,-76.68,-73.13,-71.43,-67.8,-89.83,-94.17,-95.63,-96.77,-84.67,-75.98,-81.07,-98.07,-92.83,-94.05,-104.68,-112.92,-123,-121.33,-106.1,-105.13,-112.42,-117.58,-134.58,-80.1,-79.92,-98.47,-86.4,-157.92,-120.7,-76.40,-78.77,-103.52,-81.59]
 var variable="qpf"
 var variable2="QPF"
-var variable3=["qpf","qpf3h","2mt","2mdew","2mrh","10mwind","850t","850wind","pw","cape","shear","ptype","snow","thick","slp"];
+var variable3=["qpf","qpf3","2mt","2mdew","2mrh","10mwind","850t","850wind","pw","cape","shear","ptype","snow","thick","slp"];
 var options=["QPF", "3-h QPF","2-m T","2-m Td","2-m RH","10-m wind","850-hPa T","850-hPa wind","PW","CAPE","Shear","P-type","Snow","Thickness","SLP"];
 var unitlist=["in","in","F","F","%","kt","C","kt","in","J/kg","kt","%","in","dam","hPa"];
 var ylabels=["Total Accumulated QPF (inches)", "3-h Accumulated QPF (inches)","2-m Temperature (F)","2-m Dew point Temperature (F)","2-m Relative Humidity (%)","10-m Wind Speed (kt)","850-hPa Temperature (C)","850-hPa Wind Speed (kt)","Precipitable Water (in)","Surface CAPE (J/kg)","Surface to 500-hPa Shear Magnitude (kt)","Probability of > 0.01 inches in the previous 3-h period (percent)","Total Accumulated Snowfall using 10:1 snow:liquid ratio (inches)","850 to 700 hPa thickness (dam)","Sea-level Pressure (hPa)"];
@@ -416,8 +380,6 @@ function initialize(){
 	if(passed_stationname!=""){
 		if(searchByName(passed_stationname,hinames)>=0){
 			imageObj.stationname = passed_stationname;
-//                        //Generate URL
-//                        generate_url();
 		}
 	}
                         //Generate URL
@@ -516,6 +478,7 @@ for (i=0; i<options.length;i++) {
         wasdp=0;}
         else {wasdp=1;transitiontime=1;}
       //istart=0;
+      //GEFS plume line colors
       color=d3.scale.ordinal()
         .range(["#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#000000","#0d77ce"]);
 }
@@ -798,7 +761,7 @@ faxis=brushsvg.append("g")
   .call(d3.svg.axis().scale(xb).orient("bottom").tickValues([0,12,24,36,48,60,72,84,96,108,120,132,144,156,168,180,192]));
     faxis.append("text")
       .attr("x",110)
-      .attr("dy","-2.0em")
+      .attr("dy","-2.75em")
       .style("font-size","12px")
       .text("Choose forecast hours to span by adjusting gray box");
 var circleb = brushsvg.append("g").selectAll("circle")
@@ -919,7 +882,7 @@ function topline() {
 var parseDate=d3.time.format.utc("%m-%d-%Y:%H").parse;
 var parseobsDate=d3.time.format.utc("%y%m%d/%H00").parse;
 
-
+// GEFS plume line colors
 var color=d3.scale.ordinal()
     .range(["#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#9a9a9a","#000000","#0d77ce"])
 
@@ -1915,9 +1878,3 @@ linesvg.selectAll(".dot")
 
 </script>
 </body>
-
-<!--
-<script type="text/javascript">
-    alert("*UPDATE YOUR BOOKMARKS* The GEFS plumes webpage now allows you to specify a station ID in the URL. Bookmark the URL with your preferred station ID to return to that particular station. Click 'OK' to view the last available GEFS plumes on this webpage.");
-</script>
--->

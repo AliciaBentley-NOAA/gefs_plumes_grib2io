@@ -20,11 +20,11 @@ yf2=`expr ${ymonth} - 1`
 yday2=`expr ${ydaydate} - 0`
 ycyc2=`expr ${ycyc} - 0`
 
-# 332, 333, and 334 are lines within the .html script where 
+# 296, 297, and 298 are lines within the .html script where 
 
-sed '332s/\([0-9]*,[0-9]*,[0-9]*,[0-9]*,0,0\)/'${year}','${f2}','${day2}','${cyc2}',0,0/' EMCGEFSplumes.html > tmpfile ; mv tmpfile EMCGEFSplumes.html
-sed '333s/\([0-9]*,[0-9]*,[0-9]*,[0-9]*,0,0\)/'${year}','${f2}','${day2}','${cyc2}',0,0/' EMCGEFSplumes.html > tmpfile ; mv tmpfile EMCGEFSplumes.html
-sed '334s/\([0-9]*,[0-9]*,[0-9]*,[0-9]*,0,0\)/'${yyear}','${yf2}','${yday2}',23,0,0/' EMCGEFSplumes.html > tmpfile ; mv tmpfile EMCGEFSplumes.html
+sed '296s/\([0-9]*,[0-9]*,[0-9]*,[0-9]*,0,0\)/'${year}','${f2}','${day2}','${cyc2}',0,0/' EMCGEFSplumes.html > tmpfile ; mv tmpfile EMCGEFSplumes.html
+sed '297s/\([0-9]*,[0-9]*,[0-9]*,[0-9]*,0,0\)/'${year}','${f2}','${day2}','${cyc2}',0,0/' EMCGEFSplumes.html > tmpfile ; mv tmpfile EMCGEFSplumes.html
+sed '298s/\([0-9]*,[0-9]*,[0-9]*,[0-9]*,0,0\)/'${yyear}','${yf2}','${yday2}',23,0,0/' EMCGEFSplumes.html > tmpfile ; mv tmpfile EMCGEFSplumes.html
 
 
 #if [[ $cyc -eq 00 ]]

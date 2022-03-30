@@ -3,5 +3,6 @@
 15 12 * * * /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/drive_gefs 06 1>/lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefsv12.out06 2>&1
 57 17 * * * /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/drive_gefs 12 1>/lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefsv12.out12 2>&1
 57 23 * * * /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/drive_gefs 18 1>/lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefsv12.out18 2>&1
-41 05 * * * bash -l -c /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/gefsobs 1>/lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefsv12obs.out 2>&1
-41 12 * * * bash -l -c /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/ygefsobs 1>/lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/ygefsv12obs.out 2>&1
+
+#41 05 * * * bash -l -c /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/gefsobs 1>/lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefsv12obs.out 2>&1
+#41 12 * * * bash -l -c /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/ygefsobs 1>/lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/ygefsv12obs.out 2>&1
