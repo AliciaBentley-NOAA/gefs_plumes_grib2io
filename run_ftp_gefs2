@@ -31,9 +31,9 @@ scp *10m*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
 scp *typ*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test 
 scp *snow*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test 
 
-#if [[ $number -gt 3700 ]];then
+if [[ $number -gt 3700 ]];then
   scp EMC*html abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test/index.html
-#fi
+fi
 
 exit
 
