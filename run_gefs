@@ -2,9 +2,9 @@
 #PBS -N gefs_plumes
 #PBS -o /lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefs_plumes.out
 #PBS -e /lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefs_plumes.err
-#PBS -l select=1:ncpus=8:mpiprocs=4:mem=16GB
+#PBS -l select=2:ncpus=16:mpiprocs=4:mem=20GB
 #PBS -q dev
-#PBS -l walltime=01:10:00
+#PBS -l walltime=01:30:00
 #PBS -A VERF-DEV
 
 set +x
@@ -70,6 +70,6 @@ echo beforelsf
 mpiexec  -np 4 --cpu-bind core --depth=2 cfp poescript > out_poescript.txt
 echo pastlsf
 
-qsub /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/run_ftp_gefs1
 qsub /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/run_ftp_gefs2
+qsub /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/run_ftp_gefs1
 exit

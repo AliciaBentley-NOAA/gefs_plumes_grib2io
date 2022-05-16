@@ -1,10 +1,10 @@
 #!/bin/bash
-#PBS -N gefs.ftp
-#PBS -o /lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefsftp1.out
-#PBS -e /lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefsftp1.err
-#PBS -l select=1:ncpus=4:mem=1GB
+#PBS -N gefs.ftp2
+#PBS -o /lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefsftp2.out
+#PBS -e /lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefsftp2.err
+#PBS -l select=1:ncpus=10:mem=2GB
 #PBS -q dev_transfer
-#PBS -l walltime=00:10:00
+#PBS -l walltime=00:20:00
 #PBS -A VERF-DEV
 
 set -x
@@ -14,7 +14,6 @@ cd /lfs/h2/emc/stmp/Alicia.Bentley/gefsv12
 cyc=`cut -c 9-10 holddate.txt`
 day=`cut -c 7-8 holddate.txt`
 echo $day
-number=$(ls -l * | grep csv | wc -l)
 
 pwd
 
@@ -25,15 +24,12 @@ ls -l *csv
 pwd
 
 scp *pw*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test 
-scp *850*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
 scp *cape*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
-scp *10m*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
+scp *850*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
+scp *shear*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
+scp *thick*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
 scp *typ*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test 
-scp *snow*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test 
 
-if [[ $number -gt 3700 ]];then
-  scp EMC*html abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test/index.html
-fi
 
 exit
 
