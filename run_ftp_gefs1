@@ -9,7 +9,7 @@
 
 set -x
 
-cd /lfs/h2/emc/stmp/Alicia.Bentley/gefsv12
+cd /lfs/h2/emc/stmp/${USER}/gefsv12
 
 cyc=`cut -c 9-10 holddate.txt`
 day=`cut -c 7-8 holddate.txt`

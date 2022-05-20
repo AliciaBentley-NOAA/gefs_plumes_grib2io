@@ -1,7 +1,7 @@
 #!/bin/sh -l
 echo 'into'
 #Script to create text files of surface obs at various stations
-source /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/versions/run.ver
+source /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/versions/run.ver
 module purge
 module load envvar/${envvar_ver}
 module load intel/${intel_ver}
@@ -18,8 +18,8 @@ module load cfp/${cfp_ver}
 module load gempak/${gempak_ver}
 
 
-mkdir -p /lfs/h2/emc/stmp/Alicia.Bentley/yobsgefsv12
-cd /lfs/h2/emc/stmp/Alicia.Bentley/yobsgefsv12
+mkdir -p /lfs/h2/emc/stmp/${USER}/yobsgefsv12
+cd /lfs/h2/emc/stmp/${USER}/yobsgefsv12
 rm -rf *txt
 
 #date +%Y%m%d12 > holddate.txt
@@ -74,7 +74,7 @@ if [[ $porp -eq "venus" ]]
 then
 for s in $stations; do
 for h in $hours; do
-/lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/advtime $ymdh 0 -1 1 0 > currentday.txt
+/lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/advtime $ymdh 0 -1 1 0 > currentday.txt
 ymdcurrent=`cut -c 1-8 currentday.txt`
 fmdl1=/lfs/h1/ops/prod/dcom/ldmdata/gempak/hrly/${ymd}.hrly
 ((k=k+1))
@@ -82,7 +82,7 @@ fmdl1=/lfs/h1/ops/prod/dcom/ldmdata/gempak/hrly/${ymd}.hrly
     sflist << EOF
 SFFILE = $fmdl1
 AREA   = @${s}
-DATTIM = `/lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/advtime $ymdh 0 -1 0`-`/lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/advtime $ymdh $h -1 0`
+DATTIM = `/lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/advtime $ymdh 0 -1 0`-`/lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/advtime $ymdh $h -1 0`
 SFPARM = tmpc;dwpc;sknt;drct;tclo;pmsl;P01I
 OUTPUT = f/pancobs${h}.txt
 IDNTYP = STID

@@ -1,7 +1,7 @@
 #!/bin/ksh -l
 
 set +x
-source /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/versions/run.ver
+source /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/versions/run.ver
 module purge
 module load envvar/${envvar_ver}
 module load intel/${intel_ver}
@@ -21,19 +21,19 @@ module load proj/${proj_ver}
 module load geos/${geos_ver}
 module use /lfs/h1/mdl/nbm/save/apps/modulefiles
 module load python-modules/${python_ver}
-export PYTHONPATH="${PYTHONPATH}:/lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/python"
+export PYTHONPATH="${PYTHONPATH}:/lfs/h2/emc/vpppg/noscrub/${USER}/python"
 
 #module list
 set -x
 
 cyc=$1
 
-mkdir -p /lfs/h2/emc/ptmp/Alicia.Bentley/cron.out
-mkdir -p /lfs/h2/emc/stmp/Alicia.Bentley/gefsv12
-cd /lfs/h2/emc/stmp/Alicia.Bentley/gefsv12
-cp /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/*gfsxsta*txt .
-cp /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/matplotlibrc .
-cp /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/EMCGEFSplumes.html .
+mkdir -p /lfs/h2/emc/ptmp/${USER}/cron.out
+mkdir -p /lfs/h2/emc/stmp/${USER}/gefsv12
+cd /lfs/h2/emc/stmp/${USER}/gefsv12
+cp /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/*gfsxsta*txt .
+cp /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/matplotlibrc .
+cp /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/EMCGEFSplumes.html .
 
 sleep 3
 /bin/date +%Y%m%d${cyc}%a > holddate.txt
@@ -46,5 +46,5 @@ sleep 3
 #/bin/date --date="2 days ago" +%Y%m%d${cyc}%a > yholddate.txt
 
 sleep 3
-qsub /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/run_gefs
+qsub /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/run_gefs
 exit

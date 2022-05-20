@@ -1,6 +1,6 @@
 #!/bin/ksh --login
 echo 'into'
-source /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/versions/run.ver
+source /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/versions/run.ver
 module purge
 module load envvar/${envvar_ver}
 module load intel/${intel_ver}
@@ -20,12 +20,12 @@ module load proj/${proj_ver}
 module load geos/${geos_ver}
 module use /lfs/h1/mdl/nbm/save/apps/modulefiles
 module load python-modules/${python_ver}
-export PYTHONPATH="${PYTHONPATH}:/lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/python"
+export PYTHONPATH="${PYTHONPATH}:/lfs/h2/emc/vpppg/noscrub/${USER}/python"
 
 #module list
 cyc=$1
 
-cd /lfs/h2/emc/stmp/Alicia.Bentley/gefsv12
+cd /lfs/h2/emc/stmp/${USER}/gefsv12
 
 
 year=`cut -c 1-4 holddate.txt`
@@ -37,14 +37,14 @@ ymdh=${year}${month}${day}${hour}
 ymdhdow=${year}${month}${day}${hour}${dow}
 
 
-python /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/makegefs2mtcsv.py $ymdh > out_2mt_python.txt &
-python /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/makegefs2mdewcsv.py $ymdh > out_2mdew_python.txt &
-python /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/makegefscapecsv.py $ymdh > out_cape_python.txt &
-python /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/makegefsslpcsv.py $ymdh > out_slp_python.txt &
+python /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/makegefs2mtcsv.py $ymdh > out_2mt_python.txt &
+python /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/makegefs2mdewcsv.py $ymdh > out_2mdew_python.txt &
+python /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/makegefscapecsv.py $ymdh > out_cape_python.txt &
+python /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/makegefsslpcsv.py $ymdh > out_slp_python.txt &
 wait
 
 
-cp /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/edit_gefs.ksh .
+cp /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/edit_gefs.ksh .
 ./edit_gefs.ksh
 
 exit

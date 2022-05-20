@@ -8,7 +8,7 @@
 #PBS -A VERF-DEV
 
 set +x
-source /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/versions/run.ver
+source /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/versions/run.ver
 module purge
 module load envvar/${envvar_ver}
 module load intel/${intel_ver}
@@ -28,18 +28,18 @@ module load proj/${proj_ver}
 module load geos/${geos_ver}
 module use /lfs/h1/mdl/nbm/save/apps/modulefiles
 module load python-modules/${python_ver}
-export PYTHONPATH="${PYTHONPATH}:/lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/python"
+export PYTHONPATH="${PYTHONPATH}:/lfs/h2/emc/vpppg/noscrub/${USER}/python"
 
 #module list
 set -x
 
-cd /lfs/h2/emc/stmp/Alicia.Bentley/gefsv12
-export HOLDIN=/lfs/h2/emc/stmp/Alicia.Bentley
+cd /lfs/h2/emc/stmp/${USER}/gefsv12
+export HOLDIN=/lfs/h2/emc/stmp/${USER}
 export GBexec=/apps/ops/prod/nco
 
 echo intoscript
-rm -rf /lfs/h2/emc/stmp/Alicia.Bentley/gefsv12/*.csv
-rm -rf /lfs/h2/emc/stmp/Alicia.Bentley/gefsv12/out*.txt
+rm -rf /lfs/h2/emc/stmp/${USER}/gefsv12/*.csv
+rm -rf /lfs/h2/emc/stmp/${USER}/gefsv12/out*.txt
 year=`cut -c 1-4 holddate.txt`
 month=`cut -c 5-6 holddate.txt`
 day=`cut -c 7-8 holddate.txt`
@@ -53,10 +53,10 @@ set -x
 
 'rm' poescript
 
-echo "/lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/launchgefs4 ${cyc} > out_launchgefs4.txt &" >> poescript
-echo "/lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/launchgefs3 ${cyc} > out_launchgefs3.txt &" >> poescript
-echo "/lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/launchgefs2 ${cyc} > out_launchgefs2.txt &" >> poescript
-echo "/lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/launchgefs1 ${cyc} > out_launchgefs1.txt &" >> poescript
+echo "/lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/launchgefs4 ${cyc} > out_launchgefs4.txt &" >> poescript
+echo "/lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/launchgefs3 ${cyc} > out_launchgefs3.txt &" >> poescript
+echo "/lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/launchgefs2 ${cyc} > out_launchgefs2.txt &" >> poescript
+echo "/lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/launchgefs1 ${cyc} > out_launchgefs1.txt &" >> poescript
 
 chmod 775 poescript
 #export MP_PGMMODEL=mpmd
@@ -70,6 +70,6 @@ echo beforelsf
 mpiexec  -np 4 --cpu-bind core --depth=2 cfp poescript > out_poescript.txt
 echo pastlsf
 
-qsub /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/run_ftp_gefs2
-qsub /lfs/h2/emc/vpppg/noscrub/Alicia.Bentley/gefsv12/run_ftp_gefs1
+qsub /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/run_ftp_gefs2
+qsub /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/run_ftp_gefs1
 exit
