@@ -1,10 +1,10 @@
 #!/bin/bash
 #PBS -N gefs.ftp2
-#PBS -o /lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefsftp2.out
-#PBS -e /lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefsftp2.err
+#PBS -o /lfs/h2/emc/ptmp/alicia.bentley/cron.out/gefsftp2.out
+#PBS -e /lfs/h2/emc/ptmp/alicia.bentley/cron.out/gefsftp2.err
 #PBS -l select=1:ncpus=10:mem=2GB
 #PBS -q dev_transfer
-#PBS -l walltime=00:20:00
+#PBS -l walltime=00:25:00
 #PBS -A VERF-DEV
 
 set -x

@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -N gefs_plumes
-#PBS -o /lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefs_plumes.out
-#PBS -e /lfs/h2/emc/ptmp/Alicia.Bentley/cron.out/gefs_plumes.err
+#PBS -o /lfs/h2/emc/ptmp/alicia.bentley/cron.out/gefs_plumes.out
+#PBS -e /lfs/h2/emc/ptmp/alicia.bentley/cron.out/gefs_plumes.err
 #PBS -l select=2:ncpus=16:mpiprocs=4:mem=20GB
 #PBS -q dev
 #PBS -l walltime=01:30:00
