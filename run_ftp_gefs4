@@ -1,0 +1,32 @@
+#!/bin/bash
+#PBS -N gefs.ftp4
+#PBS -o /lfs/h2/emc/ptmp/alicia.bentley/cron.out/gefsftp4.out
+#PBS -e /lfs/h2/emc/ptmp/alicia.bentley/cron.out/gefsftp4.err
+#PBS -l select=1:ncpus=10:mem=2GB
+#PBS -q dev_transfer
+#PBS -l walltime=00:25:00
+#PBS -A VERF-DEV
+
+set -x
+
+cd /lfs/h2/emc/stmp/${USER}/gefsv12
+
+cyc=`cut -c 9-10 holddate.txt`
+day=`cut -c 7-8 holddate.txt`
+echo $day
+
+pwd
+
+ls -l
+
+ls -l *csv
+
+pwd
+
+scp *shear*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
+scp *thick*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
+scp *typ*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
+
+
+exit
+

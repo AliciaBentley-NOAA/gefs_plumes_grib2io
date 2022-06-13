@@ -70,6 +70,8 @@ echo beforelsf
 mpiexec  -np 4 --cpu-bind core --depth=2 cfp poescript > out_poescript.txt
 echo pastlsf
 
+qsub /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/run_ftp_gefs4
+qsub /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/run_ftp_gefs3
 qsub /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/run_ftp_gefs2
 qsub /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/run_ftp_gefs1
 exit
