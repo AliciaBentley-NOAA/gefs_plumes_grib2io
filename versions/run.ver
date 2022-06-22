@@ -17,4 +17,6 @@ export python_ver=3.8.6
 export proj_ver=7.1.0
 export geos_ver=3.8.1
 export gempak_ver=7.14.1
+#export grib2io_ver=0.9.3
+export grib2io_ver=1.0.2
 

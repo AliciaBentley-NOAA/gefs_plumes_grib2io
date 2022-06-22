@@ -2,9 +2,9 @@
 #PBS -N gefs_plumes
 #PBS -o /lfs/h2/emc/ptmp/alicia.bentley/cron.out/gefs_plumes.out
 #PBS -e /lfs/h2/emc/ptmp/alicia.bentley/cron.out/gefs_plumes.err
-#PBS -l select=2:ncpus=16:mpiprocs=4:mem=20GB
+#PBS -l select=2:ncpus=16:mpiprocs=4:mem=200GB
 #PBS -q dev
-#PBS -l walltime=01:30:00
+#PBS -l walltime=02:00:00
 #PBS -A VERF-DEV
 
 set +x
@@ -27,7 +27,8 @@ module load python/${python_ver}
 module load proj/${proj_ver}
 module load geos/${geos_ver}
 module use /lfs/h1/mdl/nbm/save/apps/modulefiles
-module load python-modules/${python_ver}
+module unload python-modules/3.8.6
+module load grib2io/${grib2io_ver}
 export PYTHONPATH="${PYTHONPATH}:/lfs/h2/emc/vpppg/noscrub/${USER}/python"
 
 #module list

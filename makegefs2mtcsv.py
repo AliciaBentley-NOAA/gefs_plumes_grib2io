@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib
 import math
 import subprocess
+import time,os,sys,multiprocessing
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy import interpolate
@@ -58,11 +59,19 @@ for i in range(len(members)):
     elif i==1:
       nmbtotal[:,j,i]=date_list[j].strftime("%m-%d-%Y:%H")
     elif i>1 and members[i]!='GFS':
+      #t1a = time.perf_counter()
       grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
+      #t2a = time.perf_counter()
+      #t3a = round(t2a-t1a, 3)
+      #print(("%.3f seconds to open") % t3a)
       #grib message order changes from f00 to f03 to f06
       if j==0:
         #precip=(grbs[64][0].data()-273.15)*1.8 + 32
+        #t4a = time.perf_counter()
         precip=(grbs.select(shortName='TMP',level='2 m above ground')[0].data()-273.15)*1.8 + 32
+        #t5a = time.perf_counter()
+        #t6a = round(t5a-t4a, 3)
+        #print(("%.3f seconds to select") % t6a)
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #precip=(grbs[63][0].data()-273.15)*1.8 + 32
