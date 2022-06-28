@@ -102,6 +102,6 @@ sed '/^\s*$/d' pancobs.txt | sed '/STN/d' | sed '/PARM/d' | sed '/P01I/d'  > rtm
 mv pancobs.txt ${s}_${ymd}obs.txt
 rm -rf *pancobs*txt
 done
-scp *${ymd}*.txt abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test/
+scp *${ymd}*.txt abentley@emcrzdm:/home/www/emc/htdocs/users/meg/gefs_plumes/
 fi
 exit

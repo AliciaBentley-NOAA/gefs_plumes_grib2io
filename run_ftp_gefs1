@@ -24,11 +24,11 @@ ls -l *csv
 
 pwd
 
-scp *2m*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
-scp *qpf*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
+scp *2m*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/gefs_plumes
+scp *qpf*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/gefs_plumes
 
 if [[ $numfiles -gt 3700 ]];then
-	scp EMC*html abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test/index.html
+	scp EMC*html abentley@emcrzdm:/home/www/emc/htdocs/users/meg/gefs_plumes/index.html
 fi
 
 

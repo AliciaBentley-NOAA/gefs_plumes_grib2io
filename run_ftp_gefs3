@@ -24,9 +24,9 @@ ls -l *csv
 
 pwd
 
-scp *10m*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
-scp *snow*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
-scp *slp*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/grib2io_test
+scp *10m*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/gefs_plumes
+scp *snow*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/gefs_plumes
+scp *slp*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/gefs_plumes
 
 
 exit
