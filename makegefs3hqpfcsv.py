@@ -105,10 +105,10 @@ for i in range(len(members)):
         grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.2/gfs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/gfs.t'+str(lasthour).zfill(2)+'z.pgrb2.0p50.f006', mode='r')
         grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.2/gfs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/gfs.t'+str(lasthour).zfill(2)+'z.pgrb2.0p50.f003', mode='r')
         #precipnewc=grbs[596][0].data()*.03937
-        precipnewc=grbs.select(shortName='APCP')[0].data()*.03937
+        precipnewc=grbs.select(shortName='APCP',duration=6)[0].data()*.03937
         precipnewc=np.asarray(precipnewc[::-1,:])
         #precipnewp=grbsprev[596][0].data()*.03937
-        precipnewp=grbsprev.select(shortName='APCP')[0].data()*.03937
+        precipnewp=grbsprev.select(shortName='APCP',duration=3)[0].data()*.03937
         precipnewp=np.asarray(precipnewp[::-1,:])
         precip=precipnewc-precipnewp
       elif (j%2)!=0:
@@ -121,7 +121,7 @@ for i in range(len(members)):
         precipnewc=grbs.select(shortName='APCP',duration=6)[0].data()*.03937
         precipnewc=np.asarray(precipnewc[::-1,:])
         #precipnewp=grbsprev[596][0].data()*.03937
-        precipnewcp=grbsprev.select(shortName='APCP',duration=3)[0].data()*.03937
+        precipnewp=grbsprev.select(shortName='APCP',duration=3)[0].data()*.03937
         precipnewp=np.asarray(precipnewp[::-1,:])
         precip=precipnewc-precipnewp
       lats,lons = grbs[31][0].latlons()
