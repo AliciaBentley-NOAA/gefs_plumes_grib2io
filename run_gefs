@@ -1,10 +1,10 @@
 #!/bin/bash
 #PBS -N gefs_plumes
-#PBS -o /lfs/h2/emc/ptmp/alicia.bentley/cron.out/gefs_plumes.out
-#PBS -e /lfs/h2/emc/ptmp/alicia.bentley/cron.out/gefs_plumes.err
+#PBS -o /lfs/h2/emc/stmp/alicia.bentley/cron.out/gefs_plumes.out
+#PBS -e /lfs/h2/emc/stmp/alicia.bentley/cron.out/gefs_plumes.err
 #PBS -l select=2:ncpus=16:mpiprocs=4:mem=200GB
 #PBS -q dev
-#PBS -l walltime=02:00:00
+#PBS -l walltime=03:00:00
 #PBS -A VERF-DEV
 
 set +x

@@ -29,7 +29,7 @@ set -x
 
 cyc=$1
 
-mkdir -p /lfs/h2/emc/ptmp/${USER}/cron.out
+mkdir -p /lfs/h2/emc/stmp/${USER}/cron.out
 mkdir -p /lfs/h2/emc/stmp/${USER}/gefsv12
 cd /lfs/h2/emc/stmp/${USER}/gefsv12
 cp /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/*gfsxsta*txt .

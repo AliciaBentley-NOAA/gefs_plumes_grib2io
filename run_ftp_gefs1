@@ -1,10 +1,10 @@
 #!/bin/bash
 #PBS -N gefs.ftp1
-#PBS -o /lfs/h2/emc/ptmp/alicia.bentley/cron.out/gefsftp1.out
-#PBS -e /lfs/h2/emc/ptmp/alicia.bentley/cron.out/gefsftp1.err
+#PBS -o /lfs/h2/emc/stmp/alicia.bentley/cron.out/gefsftp1.out
+#PBS -e /lfs/h2/emc/stmp/alicia.bentley/cron.out/gefsftp1.err
 #PBS -l select=1:ncpus=10:mem=2GB
 #PBS -q dev_transfer
-#PBS -l walltime=00:25:00
+#PBS -l walltime=02:00:00
 #PBS -A VERF-DEV
 
 set -x
@@ -24,8 +24,8 @@ ls -l *csv
 
 pwd
 
-scp *2m*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/gefs_plumes
 scp *qpf*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/gefs_plumes
+scp *2m*csv abentley@emcrzdm:/home/www/emc/htdocs/users/meg/gefs_plumes
 
 if [[ $numfiles -gt 3700 ]];then
 	scp EMC*html abentley@emcrzdm:/home/www/emc/htdocs/users/meg/gefs_plumes/index.html
