@@ -1,4 +1,4 @@
-#!/bin/sh -l
+#!/bin/sh
 echo 'into'
 #Script to create text files of surface obs at various stations
 source /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/versions/run.ver

@@ -60,7 +60,7 @@ for i in range(len(members)):
       nmbtotal[:,j,i]=date_list[j].strftime("%m-%d-%Y:%H")
     elif i>1 and members[i]!='GFS':
       #t1a = time.perf_counter()
-      grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
+      grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.3/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
       #t2a = time.perf_counter()
       #t3a = round(t2a-t1a, 3)
       #print(("%.3f seconds to open") % t3a)
@@ -95,7 +95,7 @@ for i in range(len(members)):
 
     #get GFS data
     else:
-      grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.2/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
+      grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.3/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
       if j==0:
         #precip=(grbs[580][0].data()-273.15)*1.8 + 32
         precip=(grbs.select(shortName='TMP',level='2 m above ground')[0].data()-273.15)*1.8 + 32

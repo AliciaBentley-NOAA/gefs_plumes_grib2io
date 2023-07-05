@@ -1,4 +1,4 @@
-#!/bin/ksh --login
+#!/bin/ksh
 echo 'into'
 source /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/versions/run.ver
 module purge

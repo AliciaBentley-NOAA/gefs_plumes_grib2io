@@ -62,8 +62,8 @@ for i in range(len(members)):
       nmbtotal[:,j,i]=date_list[j].strftime("%m-%d-%Y:%H")
     elif i>1 and members[i]!='GFS':
       if j==0:
-        grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f006', mode='r')
-        grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(lasthour).zfill(2)+'z.pgrb2a.0p50.f003', mode='r')
+        grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.3/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f006', mode='r')
+        grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.3/gefs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(lasthour).zfill(2)+'z.pgrb2a.0p50.f003', mode='r')
         #precipnewc=grbs[69][0].data()*.03937
         precipnewc=grbs.select(shortName='APCP')[0].data()*.03937
         precipnewc=np.asarray(precipnewc[::-1,:])
@@ -72,13 +72,13 @@ for i in range(len(members)):
         precipnewp=np.asarray(precipnewp[::-1,:])
         precip=precipnewc-precipnewp
       elif (j%2)!=0:
-        grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
+        grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.3/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
         #precip=grbs[69][0].data()*.03937
         precip=grbs.select(shortName='APCP')[0].data()*.03937
         precip=np.asarray(precip[::-1,:])
       else:
-        grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
-        grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j-1]).zfill(3), mode='r')
+        grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.3/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
+        grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.3/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j-1]).zfill(3), mode='r')
         #precipnewc=grbs[69][0].data()*.03937
         precipnewc=grbs.select(shortName='APCP')[0].data()*.03937
         precipnewc=np.asarray(precipnewc[::-1,:])
@@ -100,10 +100,10 @@ for i in range(len(members)):
 
     #get GFS data
     else:
-      grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.2/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
+      grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.3/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
       if j==0:
-        grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.2/gfs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/gfs.t'+str(lasthour).zfill(2)+'z.pgrb2.0p50.f006', mode='r')
-        grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.2/gfs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/gfs.t'+str(lasthour).zfill(2)+'z.pgrb2.0p50.f003', mode='r')
+        grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.3/gfs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/gfs.t'+str(lasthour).zfill(2)+'z.pgrb2.0p50.f006', mode='r')
+        grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.3/gfs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/gfs.t'+str(lasthour).zfill(2)+'z.pgrb2.0p50.f003', mode='r')
         #precipnewc=grbs[596][0].data()*.03937
         precipnewc=grbs.select(shortName='APCP',duration=6)[0].data()*.03937
         precipnewc=np.asarray(precipnewc[::-1,:])
@@ -116,7 +116,7 @@ for i in range(len(members)):
         precip=grbs.select(shortName='APCP',duration=3)[0].data()*.03937
         precip=np.asarray(precip[::-1,:])
       else:
-        grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.2/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j-1]).zfill(3), mode='r')
+        grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.3/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j-1]).zfill(3), mode='r')
         #precipnewc=grbs[596][0].data()*.03937
         precipnewc=grbs.select(shortName='APCP',duration=6)[0].data()*.03937
         precipnewc=np.asarray(precipnewc[::-1,:])

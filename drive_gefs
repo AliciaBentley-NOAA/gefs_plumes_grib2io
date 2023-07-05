@@ -1,4 +1,4 @@
-#!/bin/ksh -l
+#!/bin/ksh
 
 set +x
 source /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/versions/run.ver
@@ -45,6 +45,16 @@ sleep 3
 #/bin/date --date="yesterday" +%Y%m%d${cyc}%a > holddate.txt
 #sleep 3
 #/bin/date --date="2 days ago" +%Y%m%d${cyc}%a > yholddate.txt
+
+#sleep 3
+#/bin/date --date="2 days ago" +%Y%m%d${cyc}%a > holddate.txt
+#sleep 3
+#/bin/date --date="3 days ago" +%Y%m%d${cyc}%a > yholddate.txt
+
+#sleep 3
+#/bin/date --date="3 days ago" +%Y%m%d${cyc}%a > holddate.txt
+#sleep 3
+#/bin/date --date="4 days ago" +%Y%m%d${cyc}%a > yholddate.txt
 
 sleep 3
 qsub /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/run_gefs

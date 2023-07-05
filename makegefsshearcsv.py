@@ -58,7 +58,7 @@ for i in range(len(members)):
     elif i==1:
       nmbtotal[:,j,i]=date_list[j].strftime("%m-%d-%Y:%H")
     elif i>1 and members[i]!='GFS':
-      grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.2/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
+      grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.3/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
       #grib message order changes from f00 to f03 to f06
       if j==0:
         #uwind=grbs[66][0].data()*1.94
@@ -107,7 +107,7 @@ for i in range(len(members)):
 
     #get GFS data
     else:
-      grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.2/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
+      grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.3/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
       if j==0:
         #uwind=grbs[585][0].data()*1.94
         #vwind=grbs[586][0].data()*1.94
