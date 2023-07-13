@@ -16,11 +16,11 @@ module load wgrib2/${wgrib2_ver}
 module load cfp/${cfp_ver}
 #Load Python
 module load python/${python_ver}
-module load proj/${proj_ver}
-module load geos/${geos_ver}
+module load libjpeg-turbo/${libjpeg_turbo_ver}
+#module load proj/${proj_ver}
+#module load geos/${geos_ver}
 module use /lfs/h1/mdl/nbm/save/apps/modulefiles
-module unload python-modules/3.8.6
-module load grib2io/${grib2io_ver}
+module load python-modules/${python_ver}
 export PYTHONPATH="${PYTHONPATH}:/lfs/h2/emc/vpppg/noscrub/${USER}/python"
 
 #module list

@@ -63,25 +63,25 @@ for i in range(len(members)):
       if j==0:
         #z700=grbs[36][0].data()/10.0
         #z850=grbs[41][0].data()/10.0
-        z700=grbs.select(shortName='HGT',level='700 mb')[0].data()/10.0
-        z850=grbs.select(shortName='HGT',level='850 mb')[0].data()/10.0
+        z700=grbs.select(shortName='HGT',level='700 mb')[0].data/10.0
+        z850=grbs.select(shortName='HGT',level='850 mb')[0].data/10.0
         precip=z700-z850
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #z700=grbs[36][0].data()/10.0
         #z850=grbs[41][0].data()/10.0
-        z700=grbs.select(shortName='HGT',level='700 mb')[0].data()/10.0
-        z850=grbs.select(shortName='HGT',level='850 mb')[0].data()/10.0
+        z700=grbs.select(shortName='HGT',level='700 mb')[0].data/10.0
+        z850=grbs.select(shortName='HGT',level='850 mb')[0].data/10.0
         precip=z700-z850
         precip=np.asarray(precip[::-1,:])
       else:
         #z700=grbs[36][0].data()/10.0
         #z850=grbs[41][0].data()/10.0
-        z700=grbs.select(shortName='HGT',level='700 mb')[0].data()/10.0
-        z850=grbs.select(shortName='HGT',level='850 mb')[0].data()/10.0
+        z700=grbs.select(shortName='HGT',level='700 mb')[0].data/10.0
+        z850=grbs.select(shortName='HGT',level='850 mb')[0].data/10.0
         precip=z700-z850
         precip=np.asarray(precip[::-1,:])
-      lats,lons = grbs[31][0].latlons()
+      lats,lons = grbs[31].latlons()
       latlist=lats[::-1,0]
       lonlist=lons[0,:]
       lonlist=np.asarray(lonlist)
@@ -99,25 +99,25 @@ for i in range(len(members)):
       if j==0:
         #z700=grbs[413][0].data()/10.0
         #z850=grbs[461][0].data()/10.0
-        z700=grbs.select(shortName='HGT',level='700 mb')[0].data()/10.0
-        z850=grbs.select(shortName='HGT',level='850 mb')[0].data()/10.0
+        z700=grbs.select(shortName='HGT',level='700 mb')[0].data/10.0
+        z850=grbs.select(shortName='HGT',level='850 mb')[0].data/10.0
         precip=z700-z850
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #z700=grbs[413][0].data()/10.0
         #z850=grbs[461][0].data()/10.0
-        z700=grbs.select(shortName='HGT',level='700 mb')[0].data()/10.0
-        z850=grbs.select(shortName='HGT',level='850 mb')[0].data()/10.0
+        z700=grbs.select(shortName='HGT',level='700 mb')[0].data/10.0
+        z850=grbs.select(shortName='HGT',level='850 mb')[0].data/10.0
         precip=z700-z850
         precip=np.asarray(precip[::-1,:])
       else:
         #z700=grbs[413][0].data()/10.0
         #z850=grbs[461][0].data()/10.0
-        z700=grbs.select(shortName='HGT',level='700 mb')[0].data()/10.0
-        z850=grbs.select(shortName='HGT',level='850 mb')[0].data()/10.0
+        z700=grbs.select(shortName='HGT',level='700 mb')[0].data/10.0
+        z850=grbs.select(shortName='HGT',level='850 mb')[0].data/10.0
         precip=z700-z850
         precip=np.asarray(precip[::-1,:])
-      lats,lons = grbs[31][0].latlons()
+      lats,lons = grbs[31].latlons()
       latlist=lats[::-1,0]
       lonlist=lons[0,:]
       lonlist=np.asarray(lonlist)

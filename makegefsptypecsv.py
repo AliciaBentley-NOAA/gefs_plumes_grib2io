@@ -71,12 +71,12 @@ for i in range(len(members)):
       if j==0:
         grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.3/gefs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(lasthour).zfill(2)+'z.pgrb2a.0p50.f003', mode='r')
         grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.3/gefs.'+str(lastymd)+'/'+str(lasthour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(lasthour).zfill(2)+'z.pgrb2a.0p50.f006', mode='r')
-        precipnewc=grbs.select(shortName='APCP')[0].data()*.03937
-        precipnewp=grbsprev.select(shortName='APCP')[0].data()*.03937
-        catrain=grbs.select(shortName='CRAIN')[0].data()
-        catsnow=grbs.select(shortName='CSNOW')[0].data()
-        catfreezing=grbs.select(shortName='CFRZR')[0].data()
-        catice=grbs.select(shortName='CICEP')[0].data()
+        precipnewc=grbs.select(shortName='APCP')[0].data*.03937
+        precipnewp=grbsprev.select(shortName='APCP')[0].data*.03937
+        catrain=grbs.select(shortName='CRAIN')[0].data
+        catsnow=grbs.select(shortName='CSNOW')[0].data
+        catfreezing=grbs.select(shortName='CFRZR')[0].data
+        catice=grbs.select(shortName='CICEP')[0].data
         precipnewc=np.asarray(precipnewc[::-1,:])
         precipnewp=np.asarray(precipnewp[::-1,:])
         catrain=np.asarray(catrain[::-1,:])
@@ -88,11 +88,11 @@ for i in range(len(members)):
         
       elif (j%2)!=0:
         grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.3/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
-        precip=grbs.select(shortName='APCP')[0].data()*.03937
-        catrain=grbs.select(shortName='CRAIN')[0].data()
-        catsnow=grbs.select(shortName='CSNOW')[0].data()
-        catfreezing=grbs.select(shortName='CFRZR')[0].data()
-        catice=grbs.select(shortName='CICEP')[0].data()
+        precip=grbs.select(shortName='APCP')[0].data*.03937
+        catrain=grbs.select(shortName='CRAIN')[0].data
+        catsnow=grbs.select(shortName='CSNOW')[0].data
+        catfreezing=grbs.select(shortName='CFRZR')[0].data
+        catice=grbs.select(shortName='CICEP')[0].data
         precip=np.asarray(precip[::-1,:])
         catrain=np.asarray(catrain[::-1,:])
         catsnow=np.asarray(catsnow[::-1,:])
@@ -101,12 +101,12 @@ for i in range(len(members)):
       else:
         grbsprev = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.3/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j-1]).zfill(3), mode='r')
         grbs = grib2io.open('/lfs/h1/ops/prod/com/gefs/v12.3/gefs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/pgrb2ap5/ge'+members[i]+'.t'+str(hour).zfill(2)+'z.pgrb2a.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
-        precipnewc=grbs.select(shortName='APCP')[0].data()*.03937
-        precipnewp=grbsprev.select(shortName='APCP')[0].data()*.03937
-        catrain=grbs.select(shortName='CRAIN')[0].data()
-        catsnow=grbs.select(shortName='CSNOW')[0].data()
-        catfreezing=grbs.select(shortName='CFRZR')[0].data()
-        catice=grbs.select(shortName='CICEP')[0].data()
+        precipnewc=grbs.select(shortName='APCP')[0].data*.03937
+        precipnewp=grbsprev.select(shortName='APCP')[0].data*.03937
+        catrain=grbs.select(shortName='CRAIN')[0].data
+        catsnow=grbs.select(shortName='CSNOW')[0].data
+        catfreezing=grbs.select(shortName='CFRZR')[0].data
+        catice=grbs.select(shortName='CICEP')[0].data
         precipnewc=np.asarray(precipnewc[::-1,:])
         precipnewp=np.asarray(precipnewp[::-1,:])
         catrain=np.asarray(catrain[::-1,:])
@@ -115,7 +115,7 @@ for i in range(len(members)):
         catice=np.asarray(catice[::-1,:])
 
         precip=precipnewc-precipnewp
-      lats,lons = grbs[31][0].latlons()
+      lats,lons = grbs[31].latlons()
       latlist=lats[::-1,0]
       lonlist=lons[0,:]
       lonlist=np.asarray(lonlist)

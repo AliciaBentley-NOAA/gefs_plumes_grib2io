@@ -62,17 +62,17 @@ for i in range(len(members)):
       #grib message order changes from f00 to f03 to f06
       if j==0:
         #precip=grbs[271][0].data()
-        precip=grbs.select(shortName='CAPE',level='surface')[0].data()
+        precip=grbs.select(shortName='CAPE',level='surface')[0].data
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #precip=grbs[282][0].data()
-        precip=grbs.select(shortName='CAPE',level='surface')[0].data()
+        precip=grbs.select(shortName='CAPE',level='surface')[0].data
         precip=np.asarray(precip[::-1,:])
       else:
         #precip=grbs[282][0].data()
-        precip=grbs.select(shortName='CAPE',level='surface')[0].data()
+        precip=grbs.select(shortName='CAPE',level='surface')[0].data
         precip=np.asarray(precip[::-1,:])
-      lats,lons = grbs[31][0].latlons()
+      lats,lons = grbs[31].latlons()
       latlist=lats[::-1,0]
       lonlist=lons[0,:]
       lonlist=np.asarray(lonlist)
@@ -89,17 +89,17 @@ for i in range(len(members)):
       grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.3/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
       if j==0:
         #precip=grbs[602][0].data()
-        precip=grbs.select(shortName='CAPE',level='surface')[0].data()
+        precip=grbs.select(shortName='CAPE',level='surface')[0].data
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #precip=grbs[624][0].data()
-        precip=grbs.select(shortName='CAPE',level='surface')[0].data()
+        precip=grbs.select(shortName='CAPE',level='surface')[0].data
         precip=np.asarray(precip[::-1,:])
       else:
         #precip=grbs[624][0].data()
-        precip=grbs.select(shortName='CAPE',level='surface')[0].data()
+        precip=grbs.select(shortName='CAPE',level='surface')[0].data
         precip=np.asarray(precip[::-1,:])
-      lats,lons = grbs[31][0].latlons()
+      lats,lons = grbs[31].latlons()
       latlist=lats[::-1,0]
       lonlist=lons[0,:]
       lonlist=np.asarray(lonlist)

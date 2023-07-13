@@ -62,17 +62,17 @@ for i in range(len(members)):
       #grib message order changes from f00 to f03 to f06
       if j==0:
         #precip=(grbs[261][0].data()-273.15)*1.8+32
-        precip=(grbs.select(shortName='DPT',level='2 m above ground')[0].data()-273.15)*1.8 + 32
+        precip=(grbs.select(shortName='DPT',level='2 m above ground')[0].data-273.15)*1.8 + 32
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #precip=(grbs[262][0].data()-273.15)*1.8+32
-        precip=(grbs.select(shortName='DPT',level='2 m above ground')[0].data()-273.15)*1.8 + 32
+        precip=(grbs.select(shortName='DPT',level='2 m above ground')[0].data-273.15)*1.8 + 32
         precip=np.asarray(precip[::-1,:])
       else:
         #precip=(grbs[262][0].data()-273.15)*1.8+32
-        precip=(grbs.select(shortName='DPT',level='2 m above ground')[0].data()-273.15)*1.8 + 32
+        precip=(grbs.select(shortName='DPT',level='2 m above ground')[0].data-273.15)*1.8 + 32
         precip=np.asarray(precip[::-1,:])
-      lats,lons = grbs[31][0].latlons()
+      lats,lons = grbs[31].latlons()
       latlist=lats[::-1,0]
       lonlist=lons[0,:]
       lonlist=np.asarray(lonlist)
@@ -89,17 +89,17 @@ for i in range(len(members)):
       grbs = grib2io.open('/lfs/h1/ops/prod/com/gfs/v16.3/gfs.'+str(ymd)+'/'+str(hour).zfill(2)+'/atmos/gfs.t'+str(hour).zfill(2)+'z.pgrb2.0p50.f'+str(fhours1[j]).zfill(3), mode='r')
       if j==0:
         #precip=(grbs[582][0].data()-273.15)*1.8+32
-        precip=(grbs.select(shortName='DPT',level='2 m above ground')[0].data()-273.15)*1.8 + 32
+        precip=(grbs.select(shortName='DPT',level='2 m above ground')[0].data-273.15)*1.8 + 32
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #precip=(grbs[583][0].data()-273.15)*1.8+32
-        precip=(grbs.select(shortName='DPT',level='2 m above ground')[0].data()-273.15)*1.8 + 32
+        precip=(grbs.select(shortName='DPT',level='2 m above ground')[0].data-273.15)*1.8 + 32
         precip=np.asarray(precip[::-1,:])
       else:
         #precip=(grbs[583][0].data()-273.15)*1.8+32
-        precip=(grbs.select(shortName='DPT',level='2 m above ground')[0].data()-273.15)*1.8 + 32
+        precip=(grbs.select(shortName='DPT',level='2 m above ground')[0].data-273.15)*1.8 + 32
         precip=np.asarray(precip[::-1,:])
-      lats,lons = grbs[31][0].latlons()
+      lats,lons = grbs[31].latlons()
       latlist=lats[::-1,0]
       lonlist=lons[0,:]
       lonlist=np.asarray(lonlist)

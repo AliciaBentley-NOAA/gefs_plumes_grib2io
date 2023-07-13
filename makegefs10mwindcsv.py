@@ -58,25 +58,25 @@ for i in range(len(members)):
       if j==0:
         #uwind=grbs[66][0].data()*1.94
         #vwind=grbs[67][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data*1.94
+        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data*1.94
         precip=(uwind**2+vwind**2)**.5
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #uwind=grbs[67][0].data()*1.94
         #vwind=grbs[68][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data*1.94
+        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data*1.94
         precip=(uwind**2+vwind**2)**.5
         precip=np.asarray(precip[::-1,:])
       else:
         #uwind=grbs[67][0].data()*1.94
         #vwind=grbs[68][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data*1.94
+        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data*1.94
         precip=(uwind**2+vwind**2)**.5
         precip=np.asarray(precip[::-1,:])
-      lats,lons = grbs[31][0].latlons()
+      lats,lons = grbs[31].latlons()
       latlist=lats[::-1,0]
       lonlist=lons[0,:]
       lonlist=np.asarray(lonlist)
@@ -94,25 +94,25 @@ for i in range(len(members)):
       if j==0:
         #uwind=grbs[585][0].data()*1.94
         #vwind=grbs[586][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data*1.94
+        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data*1.94
         precip=(uwind**2+vwind**2)**.5
         precip=np.asarray(precip[::-1,:])
       elif j==1:
         #uwind=grbs[588][0].data()*1.94
         #vwind=grbs[589][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data*1.94
+        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data*1.94
         precip=(uwind**2+vwind**2)**.5
         precip=np.asarray(precip[::-1,:])
       else:
         #uwind=grbs[588][0].data()*1.94
         #vwind=grbs[589][0].data()*1.94
-        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data()*1.94
-        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data()*1.94
+        uwind=grbs.select(shortName='UGRD',level='10 m above ground')[0].data*1.94
+        vwind=grbs.select(shortName='VGRD',level='10 m above ground')[0].data*1.94
         precip=(uwind**2+vwind**2)**.5
         precip=np.asarray(precip[::-1,:])
-      lats,lons = grbs[31][0].latlons()
+      lats,lons = grbs[31].latlons()
       latlist=lats[::-1,0]
       lonlist=lons[0,:]
       lonlist=np.asarray(lonlist)
