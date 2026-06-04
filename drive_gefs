@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/ksh -l
 
 set +x
 source /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/versions/run.ver
@@ -29,9 +29,9 @@ set -x
 
 cyc=$1
 
-mkdir -p /lfs/h2/emc/stmp/${USER}/cron.out
-mkdir -p /lfs/h2/emc/stmp/${USER}/gefsv12
-cd /lfs/h2/emc/stmp/${USER}/gefsv12
+mkdir -p /lfs/h2/emc/ptmp/${USER}/cron.out
+mkdir -p /lfs/h2/emc/ptmp/${USER}/gefsv12
+cd /lfs/h2/emc/ptmp/${USER}/gefsv12
 cp /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/*gfsxsta*txt .
 cp /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/matplotlibrc .
 cp /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/EMCGEFSplumes.html .
@@ -55,6 +55,23 @@ sleep 3
 #/bin/date --date="3 days ago" +%Y%m%d${cyc}%a > holddate.txt
 #sleep 3
 #/bin/date --date="4 days ago" +%Y%m%d${cyc}%a > yholddate.txt
+
+#sleep 3
+#/bin/date --date="4 days ago" +%Y%m%d${cyc}%a > holddate.txt
+#sleep 3
+#/bin/date --date="5 days ago" +%Y%m%d${cyc}%a > yholddate.txt
+
+#sleep 3
+#/bin/date --date="5 days ago" +%Y%m%d${cyc}%a > holddate.txt
+#sleep 3
+#/bin/date --date="6 days ago" +%Y%m%d${cyc}%a > yholddate.txt
+
+#sleep 3
+#/bin/date --date="6 days ago" +%Y%m%d${cyc}%a > holddate.txt
+#sleep 3
+#/bin/date --date="7 days ago" +%Y%m%d${cyc}%a > yholddate.txt
+
+
 
 sleep 3
 qsub /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/run_gefs

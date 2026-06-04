@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/ksh -l
 echo 'into'
 source /lfs/h2/emc/vpppg/noscrub/${USER}/gefsv12/versions/run.ver
 module purge
@@ -26,7 +26,7 @@ export PYTHONPATH="${PYTHONPATH}:/lfs/h2/emc/vpppg/noscrub/${USER}/python"
 #module list
 cyc=$1
 
-cd /lfs/h2/emc/stmp/${USER}/gefsv12
+cd /lfs/h2/emc/ptmp/${USER}/gefsv12
 
 
 year=`cut -c 1-4 holddate.txt`

@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/ksh -l
 
 cyc=`cut -c 9-10 holddate.txt`
 day=`cut -c 11-13 holddate.txt`
@@ -20,11 +20,11 @@ yf2=`expr ${ymonth} - 1`
 yday2=`expr ${ydaydate} - 0`
 ycyc2=`expr ${ycyc} - 0`
 
-# 296, 297, and 298 are lines within the .html script where 
+# 345, 346, and 347 are lines within the .html script where 
 
-sed '296s/\([0-9]*,[0-9]*,[0-9]*,[0-9]*,0,0\)/'${year}','${f2}','${day2}','${cyc2}',0,0/' EMCGEFSplumes.html > tmpfile ; mv tmpfile EMCGEFSplumes.html
-sed '297s/\([0-9]*,[0-9]*,[0-9]*,[0-9]*,0,0\)/'${year}','${f2}','${day2}','${cyc2}',0,0/' EMCGEFSplumes.html > tmpfile ; mv tmpfile EMCGEFSplumes.html
-sed '298s/\([0-9]*,[0-9]*,[0-9]*,[0-9]*,0,0\)/'${yyear}','${yf2}','${yday2}',23,0,0/' EMCGEFSplumes.html > tmpfile ; mv tmpfile EMCGEFSplumes.html
+sed '345s/\([0-9]*,[0-9]*,[0-9]*,[0-9]*,0,0\)/'${year}','${f2}','${day2}','${cyc2}',0,0/' EMCGEFSplumes.html > tmpfile ; mv tmpfile EMCGEFSplumes.html
+sed '346s/\([0-9]*,[0-9]*,[0-9]*,[0-9]*,0,0\)/'${year}','${f2}','${day2}','${cyc2}',0,0/' EMCGEFSplumes.html > tmpfile ; mv tmpfile EMCGEFSplumes.html
+sed '347s/\([0-9]*,[0-9]*,[0-9]*,[0-9]*,0,0\)/'${yyear}','${yf2}','${yday2}',23,0,0/' EMCGEFSplumes.html > tmpfile ; mv tmpfile EMCGEFSplumes.html
 
 
 #if [[ $cyc -eq 00 ]]
